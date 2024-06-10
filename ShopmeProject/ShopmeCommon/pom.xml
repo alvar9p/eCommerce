@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.0</version> <!-- 2.4.1 -->
+		<version>2.7.3</version> <!-- 2.4.1 -->
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.shopme</groupId>
@@ -20,21 +20,14 @@
 	</properties>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>2.7.3</version>
 		</dependency>
+
 	</dependencies>
 
-	<!-- Para que no pida la clase main
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-	-->
 
 </project>
