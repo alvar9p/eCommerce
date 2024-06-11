@@ -12,15 +12,20 @@
 </head>
 <body>
 
-    <!-- Navbar -->
-    <aside>
-        <div th:replace="common/navbar :: navbar"></div>
-    </aside>
-
     <div class="container-fluid">
+
+        <!-- Navbar -->
+        <aside>
+            <div th:replace="common/navbar :: navbar"></div>
+        </aside>
+
         <div>
             <h2>Manage Users</h2>
             <a th:href="@{/users/new}">Create New User</a>
+        </div>
+
+        <div class="alert alert-success text-center" th:if="${message != null}">
+            <div th:text="${message}"></div>
         </div>
 
         <div>
