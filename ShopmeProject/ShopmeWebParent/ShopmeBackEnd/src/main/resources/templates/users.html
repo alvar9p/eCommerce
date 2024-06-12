@@ -7,6 +7,8 @@
     <title>Home - Shopme Admin</title>
 
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 </head>
@@ -47,14 +49,25 @@
                     <tr th:each="user : ${users}">
 
                         <td th:text="${user.id}"></td>
-                        <td></td>
+                        <td>
+                            <span class="fas fa-portrait fa-2x icon-silver"></span>
+                        </td>
                         <td th:text="${user.email}"></td>
                         <td th:text="${user.firstName}"></td>
                         <td th:text="${user.lastName}"></td>
                         <td th:text="${user.roles}"></td>
-                        <td th:text="${user.enabled}"></td>
+                        
                         <td>
-                            Edit &nbsp; Delete
+                            <!--  th:text="${user.enabled}" -->
+                            <!-- Se anade logica para cambiar el color -->
+                            <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green" href=""></a>
+                            <a th:if="${user.enabled == false}" class="fas fa-check-circle fa-2x icon-dark" href=""></a>
+                        
+                        </td>
+                        <td>
+                            <a class="fas fa-edit fa-2x icon-green" href=""></a>
+                                &nbsp;
+                            <a class="fas fa-trash fa-2x icon-dark" href=""></a>
                         </td>
                     </tr>
                 </tbody>
