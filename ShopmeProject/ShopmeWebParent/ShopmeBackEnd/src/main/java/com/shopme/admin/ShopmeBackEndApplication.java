@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
+// Anotaciones para que busque las entidades dentro del modulo
 @EntityScan({"com.shopme.common.entity", "com.shopme.admin.user"})
 public class ShopmeBackEndApplication {
 

@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 
+    <!-- Se parametriza: Viene de UserControler.newUser(...) -->
     <title>[[${pageTitle}]]</title>
 
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
 </head>
+
 <body>
 
     <div class="container-fluid">
@@ -20,33 +24,48 @@
         </aside>
 
         <div>
+            <!-- Se parametriza: Viene de UserControler.newUser(...) -->
             <h2>Manage Users | [[${pageTitle}]]</h2>
             <a th:href="@{/users/new}">Create New User</a>
         </div>
 
-        <form th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto" th:object="${user}" onsubmit="return checkEmailUnique(this);">
+        <!-- Formulario que se carga con todos los atributos de user -->
+        <!-- Luego se va hacia UserController.saveUser(User user, RedirectAttributes redirectAttributes) -->
+        <!-- Se llama a los atributos del objeto segun su nombre en la clase User -->
+        <!-- La funcion checkEmailUnique llama al UserRestController.checkDuplicateEmail() -->
+        <form th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto" th:object="${user}"
+            onsubmit="return checkEmailUnique(this);">
+
+            <!-- Esconde el ID porque no es necesario modificarlo en este form -->
             <input type="hidden" th:field="*{id}" />
 
+            <!-- Borde redondeado en el formulario -->
             <div class="border border-secondary rounded p-3">
 
+                <!-- Se agregan validaciones para el valor minimo de 8 caracteres -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">E-mail:</label>
                     <div class="col-sm-8">
-                        <input type="email" class="form-control" th:field="*{email}" required minlength="8" maxlength="128" />
+                        <input type="email" class="form-control" th:field="*{email}" required minlength="8"
+                            maxlength="128" />
                     </div>
                 </div>
 
+                <!-- Se agregan validaciones para el valor minimo y maximo de caracteres -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">First Name:</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" th:field="*{firstName}" required minlength="2" maxlength="45" />
+                        <input type="text" class="form-control" th:field="*{firstName}" required minlength="2"
+                            maxlength="45" />
                     </div>
                 </div>
 
+                <!-- Se agregan validaciones para el valor minimo y maximo de caracteres -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Last Name:</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" th:field="*{lastName}" required minlength="2" maxlength="45" />
+                        <input type="text" class="form-control" th:field="*{lastName}" required minlength="2"
+                            maxlength="45" />
                     </div>
                 </div>
 
@@ -54,17 +73,21 @@
                     <label class="col-sm-4 col-form-label">Password:</label>
                     <div class="col-sm-8">
                         <!-- Condicional para crear/editar, si el id es null esta creando un nuevo user -->
-                        <input th:if="${user.id == null}" type="password" class="form-control" th:field="*{password}" required minlength="8" maxlength="20" />
+                        <input th:if="${user.id == null}" type="password" class="form-control" th:field="*{password}"
+                            required minlength="8" maxlength="20" />
                         <!-- Condicional para crear/editar, si el id no es null, esta editando -->
-                        <input th:if="${user.id != null}" type="password" class="form-control" th:field="*{password}" minlength="8" maxlength="20" />
+                        <input th:if="${user.id != null}" type="password" class="form-control" th:field="*{password}"
+                            minlength="8" maxlength="20" />
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Roles:</label>
                     <div class="col-sm-8">
+                        <!-- Este atributo se pasa como lista desde el backend, viene del UserControler.newUser(Model model) -->
                         <th:block th:each="role : ${listRoles}">
-                            <input class="m-2" type="checkbox" th:field="*{roles}" th:text="${role.name}" th:value="${role.id}" />
+                            <input class="m-2" type="checkbox" th:field="*{roles}" th:text="${role.name}"
+                                th:value="${role.id}" />
                             -
                             <small th:text="${role.description}"></small>
                             </br>
@@ -72,6 +95,7 @@
                     </div>
                 </div>
 
+                <!-- Si se selecciona este chechbox, se setea user.setEnabled(true) en el backend -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Enabled:</label>
                     <div class="col-sm-8">
@@ -79,8 +103,10 @@
                     </div>
                 </div>
 
+                <!-- Botones para Guardar o cancelar el formulario -->
                 <div class="text-center">
                     <input class="btn btn-primary m-3" type="submit" value="Save" />
+                    <!-- El boton de cancelar llama a una funcion de JQuery -->
                     <input id="buttonCancel" class="btn btn-secondary" type="button" value="Cancel" />
                 </div>
 
@@ -88,13 +114,15 @@
 
         </form>
 
+
+        <!-- Este es el modal que le indica al usuario que el email ya existe -->
         <div class="modal fade text-center" id="modalDialog">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    
+
                     <div class="modal-header">
                         <h4 class="modal-title" id="modalTitle">Warning</h4>
-                        <button class="close" type="button" data-dismiss="modal">&times;</button> 
+                        <button class="close" type="button" data-dismiss="modal">&times;</button>
                     </div>
 
                     <div class="modal-body">
@@ -102,65 +130,58 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button class="btn btn-danger" type="button" data-dismiss="modal">Close</button> 
+                        <button class="btn btn-danger" type="button" data-dismiss="modal">Close</button>
                     </div>
 
                 </div>
             </div>
         </div>
-
-
-        <footer>
-            <p>Shopme Control Panel - Copiright &copy; Shopme</p>
-        </footer>
+        
     </div>
 
     <script type="text/javascript">
 
-    $(document).ready(function() {
-        $("#buttonCancel").on("click", function(){
-            window.location = "[[@{/users}]]";
+        $(document).ready(function () {
+            $("#buttonCancel").on("click", function () {
+                window.location = "[[@{/users}]]";
+            });
         });
-    });
 
-    // llama al formulario
-    // Pasar el valor de _csrf (campo email) debido a Spring security
-    // alert('Check email unique');
-    function checkEmailUnique(form){
-        var url = "[[@{/users/check_email}]]";
-        var userEmail = $("#email").val();
-        var userId = $("#id").val();
-        var csrfValue = $("input[name='_csrf']").val();
+        // Pasar el valor de _csrf (campo email) debido a Spring security
+        function checkEmailUnique(form) {
+            var url = "[[@{/users/check_email}]]";
+            var userEmail = $("#email").val();
+            var userId = $("#id").val();
+            var csrfValue = $("input[name='_csrf']").val();
 
-        var params = {id: userId, email: userEmail, _csrf: csrfValue};
+            var params = { id: userId, email: userEmail, _csrf: csrfValue };
 
-        $.post(url, params, function(response){
-            if(response == "OK"){
-                form.submit();
-            } else if(response == "Duplicated"){
-                showModalDialog("Warning", "There is another user having the email " + userEmail);
-            } else{
-                showModalDialog("Error", "Unknown response from server");
-            }
-        }).fail(function(){
-            // Si se cambia la variable 'url', por ejemplo
-            showModalDialog("Error", "Could not connect to the server");
-        });
-        return false;
-    }
+            // JQuery para la llamada a UserRestController
+            $.post(url, params, function (response) {
+                if (response == "OK") {
+                    form.submit();
+                } else if (response == "Duplicated") {
+                    showModalDialog("Warning", "There is another user having the email " + userEmail);
+                } else {
+                    showModalDialog("Error", "Unknown response from server");
+                }
+            }).fail(function () {
+                // Si se cambia la variable 'url', por ejemplo
+                showModalDialog("Error", "Could not connect to the server");
+            });
+            return false;
+        }
 
-    
-    function showModalDialog(title, message){
-        $("#modalTitle").text(title);
-        $("#modalBody").text(message);
-        $("#modalDialog").modal();
-    }
-
+        // Para mostrar el error que el email ya existe
+        function showModalDialog(title, message) {
+            $("#modalTitle").text(title);
+            $("#modalBody").text(message);
+            $("#modalDialog").modal();
+        }
 
     </script>
 
 </body>
 
-</script>
 
 </html>

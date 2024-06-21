@@ -13,6 +13,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.email = :email")
     public User getUserByEmail(@Param("email") String email);
 
+    // Verifica que el ID exista
     public Long countById(Integer id);
 
     @Query("UPDATE User u SET u.enabled = ?2 WHERE u.id = ?1")

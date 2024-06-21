@@ -12,6 +12,7 @@ public class UserRestController {
     @Autowired
     private UserService userService;
 
+    // Este metodo se llama desde la funcion de JS alojada en user_form
     @PostMapping("/users/check_email")
     public String checkDuplicateEmail(@Param("id") Integer id, @Param("email") String email){
         return userService.isEmailUnique(id, email) ? "OK" : "Duplicated";

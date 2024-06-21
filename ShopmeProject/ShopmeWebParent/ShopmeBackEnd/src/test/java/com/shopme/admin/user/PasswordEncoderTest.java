@@ -18,11 +18,8 @@ public class PasswordEncoderTest {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String rawPassword = "random1234";
         String encodedPassword = passwordEncoder.encode(rawPassword);
-
         System.out.println("Encoded password => " + encodedPassword);
-
         boolean matches = passwordEncoder.matches(rawPassword, encodedPassword);
-
         assertThat(matches).isTrue();
     }
 

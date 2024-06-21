@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 
+    <!-- Se muestra al clickear en Users en el navbar -->
     <title>Home - Shopme Admin</title>
 
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
@@ -23,6 +24,7 @@
 
         <div>
             <h2>Manage Users</h2>
+            <!-- Para crear un nuevo usuario, llama a UserController.newUser(Model model) -->
             <a th:href="@{/users/new}">Create New User</a>
         </div>
 
@@ -46,9 +48,10 @@
                 </thead>
 
                 <tbody>
+                    <!-- La variable users viene de UserController.listAll(Model model) -->
                     <tr th:each="user : ${users}">
 
-                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.id}" class="text-center"></td>
                         <td>
                             <span class="fas fa-portrait fa-2x icon-silver"></span>
                         </td>
@@ -58,7 +61,7 @@
                         <td th:text="${user.roles}"></td>
                         
                         <td>
-                            <!--  th:text="${user.enabled}" -->
+                            <!-- th:text="${user.enabled}" -->
                             <!-- Se anade logica para cambiar el color -->
                             <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green" 
                                     th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user"></a>
@@ -66,9 +69,13 @@
                                     th:href="@{'/users/' + ${user.id} + '/enabled/true'}" title="Enable this user"></a>
                         
                         </td>
+
+                        <!-- Iconos y logica para editar y eliminar -->
                         <td>
+                            <!-- Llamada al metodo get de UserController.editUser(...) -->
                             <a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}" title="Edit this user"></a>
                                 &nbsp;
+                            <!-- Llamada al metodo get de UserController.deleteUser(...) -->
                             <a class="fas fa-trash fa-2x icon-dark link-delete" th:href="@{'/users/delete/' + ${user.id}}" 
                                 th:userId="${user.id}" title="Delete this user"></a>
                         </td>
@@ -77,6 +84,7 @@
             </table>
         </div>
 
+        <!-- Modal para mensaje de confirmacion al eliminar -->
         <div class="modal fade text-center" id="confirmModal">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -99,12 +107,16 @@
             </div>
         </div>
 
-        <footer>
-            <p>Shopme Control Panel - Copiright &copy; Shopme</p>
-        </footer>
+        <!-- Footer -->
+        <aside>
+            <div th:replace="common/footer :: footer"></div>
+        </aside>
+
     </div>
 
     <script type="text/javascript">
+
+        // JQuery para eliminar el usuario
         $(document).ready(function(){
             $(".link-delete").on("click", function(e) {
                 e.preventDefault();

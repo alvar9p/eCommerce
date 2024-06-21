@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+// La anotacion Configuration indica que es una clase de conf de Spring
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -18,6 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    // Se sobreescribe este metodo para permitir entrar sin autenticarse
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests().anyRequest().permitAll();

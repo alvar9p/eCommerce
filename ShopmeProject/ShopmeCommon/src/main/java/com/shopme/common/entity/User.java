@@ -8,6 +8,9 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
 
+    // Tabla que va a manejar la relacion con los Roles
+    // Se crea una tabla intermedia en MySQL
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -29,6 +32,9 @@ public class User {
 
     private boolean enabled;
 
+    // JoinTable es la tabla intermedia
+    // joinColumn para el nombre del id de users en la tabla intermedia
+    // inverseJoinColumns para el nombre del id de roles en la tabla intermedia
     @ManyToMany
     @JoinTable(
             name = "users_roles",
