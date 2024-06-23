@@ -131,4 +131,11 @@ public class User {
                 ", roles=" + roles +
                 '}';
     }
+
+    // Se utiliza en la vista, users.html, para mostrar la imagen si no es null
+    @Transient
+    public String getPhotoImagePath(){
+        if(id == null || photos == null) return "/images/default-user.png";
+        return "/user-photos/" + this.id + "/" + this.photos;
+    }
 }

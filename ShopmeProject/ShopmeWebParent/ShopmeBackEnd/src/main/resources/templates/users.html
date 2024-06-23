@@ -53,7 +53,9 @@
 
                         <td th:text="${user.id}" class="text-center"></td>
                         <td>
-                            <span class="fas fa-portrait fa-2x icon-silver"></span>
+                            <!-- Se agrega para desplegar la imagen con el nuevo getter de la clase User -->
+                            <spanv th:if="${user.photos == null}" class="fas fa-portrait fa-2x icon-silver"></spanv>
+                            <img th:if="${user.photos != null}" th:src="@{${user.photoImagePath}}" style="width: 100px">
                         </td>
                         <td th:text="${user.email}"></td>
                         <td th:text="${user.firstName}"></td>

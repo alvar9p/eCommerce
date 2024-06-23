@@ -2,16 +2,21 @@ package com.shopme.admin.user.controller;
 
 import com.shopme.admin.user.exception.UserNotFoundException;
 import com.shopme.admin.user.service.UserService;
+import com.shopme.admin.utils.FileUploadUtil;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -44,8 +49,23 @@ public class UserController {
 
     // Recibe el formulario de user_form.html
     @PostMapping("/users/save")
-    public String saveUser(User user, RedirectAttributes redirectAttributes){
+    public String saveUser(User user, RedirectAttributes redirectAttributes,
+                           @RequestParam("image")MultipartFile multipartFile) throws IOException {
+
+    if (!multipartFile.isEmpty()){
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        user.setPhotos(fileName);
+        User savedUser = userService.save(user);
+        String uploadDir = "user-photos/" + savedUser.getId();
+
+        // Antes de salvar el archivo, se limpia el directorio
+        FileUploadUtil.cleanDirectory(uploadDir);
+        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+    } else {
+        // Significa que el form no tiene ningun archivo subido
+        if(user.getPhotos().isEmpty()) user.setPhotos(null);
         userService.save(user);
+    }
 
         // Este mensaje se va a mostrar cuando el usuario se ha creado correctamente
         redirectAttributes.addFlashAttribute("message", "The user has been saved successfully.");
