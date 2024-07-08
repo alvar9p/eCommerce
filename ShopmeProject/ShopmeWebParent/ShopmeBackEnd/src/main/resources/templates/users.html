@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
 
     <!-- Se muestra al clickear en Users en el navbar -->
     <title>Home - Shopme Admin</title>
@@ -13,10 +14,9 @@
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 </head>
+
 <body>
-
     <div class="container-fluid">
-
         <!-- Navbar -->
         <aside>
             <div th:replace="common/navbar :: navbar"></div>
@@ -50,50 +50,93 @@
                 <tbody>
                     <!-- La variable users viene de UserController.listAll(Model model) -->
                     <tr th:each="user : ${users}">
-
                         <td th:text="${user.id}" class="text-center"></td>
                         <td>
                             <!-- Se agrega para desplegar la imagen con el nuevo getter de la clase User -->
                             <spanv th:if="${user.photos == null}" class="fas fa-portrait fa-2x icon-silver"></spanv>
-                            <img th:if="${user.photos != null}" th:src="@{${user.photoImagePath}}" style="width: 100px">
+                            <img th:if="${user.photos != null}" th:src="@{${user.photoImagePath}}"
+                                style="width: 100px" />
                         </td>
                         <td th:text="${user.email}"></td>
                         <td th:text="${user.firstName}"></td>
                         <td th:text="${user.lastName}"></td>
                         <td th:text="${user.roles}"></td>
-                        
+
                         <td>
                             <!-- th:text="${user.enabled}" -->
                             <!-- Se anade logica para cambiar el color -->
-                            <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green" 
-                                    th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user"></a>
-                            <a th:if="${user.enabled == false}" class="fas fa-circle fa-2x icon-dark" 
-                                    th:href="@{'/users/' + ${user.id} + '/enabled/true'}" title="Enable this user"></a>
-                        
+                            <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
+                                th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user"></a>
+                            <a th:if="${user.enabled == false}" class="fas fa-circle fa-2x icon-dark"
+                                th:href="@{'/users/' + ${user.id} + '/enabled/true'}" title="Enable this user"></a>
                         </td>
 
                         <!-- Iconos y logica para editar y eliminar -->
                         <td>
                             <!-- Llamada al metodo get de UserController.editUser(...) -->
-                            <a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}" title="Edit this user"></a>
-                                &nbsp;
+                            <a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
+                                title="Edit this user"></a>
+                            &nbsp;
                             <!-- Llamada al metodo get de UserController.deleteUser(...) -->
-                            <a class="fas fa-trash fa-2x icon-dark link-delete" th:href="@{'/users/delete/' + ${user.id}}" 
-                                th:userId="${user.id}" title="Delete this user"></a>
+                            <a class="fas fa-trash fa-2x icon-dark link-delete"
+                                th:href="@{'/users/delete/' + ${user.id}}" th:userId="${user.id}"
+                                title="Delete this user"></a>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
+        <!-- Div para mensajes sobre paginacion -->
+        <div class="text-center m-1" th:if="${totalItems > 0}">
+            <span>Showing users #[[${startCount}]] to #[[${endCount}]] of
+                [[${totalItems}]]</span>
+        </div>
+        <!-- Si la lista de users es 0 -->
+        <div class="text-center m-1" th:unless="${totalItems > 0}">
+            <span>No users found</span>
+        </div>
+
+        <!-- Lista para paginacion -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                <!-- Muestra la primera pagina, se desactiva el boton si la pagina es 1+ -->
+                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                    <a class="page-link" th:href="@{/users/page/1}">First</a>
+                </li>
+
+                <!-- Si no es la primera pagina, se desactiva este boton-->
+                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                    <a class="page-link" th:href="@{'/users/page/' + ${currentPage - 1}}">Previous</a>
+                </li>
+
+                <!-- ForEach para mostrar la cantidad de paginas (cambia segun la cons USER_PER_PAGE - UserService) -->
+                <!-- active solo mostrara la pagina activa -->
+                <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}" 
+                    th:each="i : ${#numbers.sequence(1, totalPages)}">
+                    <a class="page-link" th:href="@{'/users/page/' + ${i}}">[[${i}]]</a>
+                </li>
+
+                <!-- Se desactiva este boton si estoy en la untima pagina -->
+                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a class="page-link" th:href="@{'/users/page/' + ${currentPage + 1}}">Next</a>
+                </li>
+
+                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a class="page-link" th:href="@{'/users/page/' + ${totalPages}}">Last</a>
+                </li>
+            </ul>
+        </nav>
+
         <!-- Modal para mensaje de confirmacion al eliminar -->
         <div class="modal fade text-center" id="confirmModal">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    
                     <div class="modal-header">
                         <h4 class="modal-title">Delete Confirmation</h4>
-                        <button class="close" type="button" data-dismiss="modal">&times;</button> 
+                        <button class="close" type="button" data-dismiss="modal">
+                            &times;
+                        </button>
                     </div>
 
                     <div class="modal-body">
@@ -102,9 +145,10 @@
 
                     <div class="modal-footer">
                         <a class="btn btn-success" href="" id="yesButton">Yes</a>
-                        <button class="btn btn-danger" type="button" data-dismiss="modal">No</button> 
+                        <button class="btn btn-danger" type="button" data-dismiss="modal">
+                            No
+                        </button>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -113,24 +157,24 @@
         <aside>
             <div th:replace="common/footer :: footer"></div>
         </aside>
-
     </div>
 
     <script type="text/javascript">
-
         // JQuery para eliminar el usuario
-        $(document).ready(function(){
-            $(".link-delete").on("click", function(e) {
+        $(document).ready(function () {
+            $(".link-delete").on("click", function (e) {
                 e.preventDefault();
                 // alert($(this).attr("href"));
                 var link = $(this);
-                var userId =  link.attr("userId");
+                var userId = link.attr("userId");
                 $("#yesButton").attr("href", link.attr("href"));
-                $("#confirmText").text("Are you sure you want to delete this user ID " + userId);
+                $("#confirmText").text(
+                    "Are you sure you want to delete this user ID " + userId
+                );
                 $("#confirmModal").modal();
             });
         });
     </script>
-
 </body>
+
 </html>
