@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+
+    <!-- Se muestra al clickear en Users en el navbar -->
     <title>Home - Shopme Admin</title>
 
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 </head>
+
 <body>
-
     <div class="container-fluid">
-
         <!-- Navbar -->
         <aside>
             <div th:replace="common/navbar :: navbar"></div>
@@ -21,6 +24,7 @@
 
         <div>
             <h2>Manage Users</h2>
+            <!-- Para crear un nuevo usuario, llama a UserController.newUser(Model model) -->
             <a th:href="@{/users/new}">Create New User</a>
         </div>
 
@@ -28,43 +32,179 @@
             <div th:text="${message}"></div>
         </div>
 
+        <!-- Buscador -->
+        <div>
+            <form class="form-inline" th:action="@{/users/page/1}">
+                <input type="hidden" name="sortField" th:value="${sortField}">
+                <input type="hidden" name="sortDir" th:value="${sortDir}">
+
+                Filter:&nbsp;
+                <!-- keyword viene del controlador -->
+                <input class="form-control m-3" type="search" name="keyword" th:value="${keyword}" required />
+                &nbsp;&nbsp;
+                <input class="btn btn-primary" type="submit" value="Search" />
+                &nbsp;&nbsp;
+                <input class="btn btn-secondary" type="button" value="Clear" onclick="clearFilter()">
+            </form>
+        </div>
+
         <div>
             <table class="table table-bordered table-striped table-hover table-responsive-xl">
                 <thead class="thead-dark">
                     <tr>
-                        <th>User ID</th>
+                        <th th:replace="common/fragments :: column_link('id', 'User ID')" />
+
                         <th>Photos</th>
-                        <th>Email</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
+
+                        <th th:replace="common/fragments :: column_link('email', 'Email')" />
+
+                        <th th:replace="common/fragments :: column_link('firstName', 'First Name')" />
+
+                        <th th:replace="common/fragments :: column_link('lastName', 'Last Name')" />
+
                         <th>Roles</th>
-                        <th>Enabled</th>
+
+                        <th th:replace="common/fragments :: column_link('enabled', 'Enabled')" />
+
                         <th></th>
                     </tr>
                 </thead>
 
                 <tbody>
+                    <!-- La variable users viene de UserController.listAll(Model model) -->
                     <tr th:each="user : ${users}">
-
-                        <td th:text="${user.id}"></td>
-                        <td></td>
+                        <td th:text="${user.id}" class="text-center"></td>
+                        <td>
+                            <!-- Se agrega para desplegar la imagen con el nuevo getter de la clase User -->
+                            <spanv th:if="${user.photos == null}" class="fas fa-portrait fa-2x icon-silver"></spanv>
+                            <img th:if="${user.photos != null}" th:src="@{${user.photoImagePath}}"
+                                style="width: 100px" />
+                        </td>
                         <td th:text="${user.email}"></td>
                         <td th:text="${user.firstName}"></td>
                         <td th:text="${user.lastName}"></td>
                         <td th:text="${user.roles}"></td>
-                        <td th:text="${user.enabled}"></td>
+
                         <td>
-                            Edit &nbsp; Delete
+                            <!-- th:text="${user.enabled}" -->
+                            <!-- Se anade logica para cambiar el color -->
+                            <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
+                                th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user"></a>
+                            <a th:if="${user.enabled == false}" class="fas fa-circle fa-2x icon-dark"
+                                th:href="@{'/users/' + ${user.id} + '/enabled/true'}" title="Enable this user"></a>
+                        </td>
+
+                        <!-- Iconos y logica para editar y eliminar -->
+                        <td>
+                            <!-- Llamada al metodo get de UserController.editUser(...) -->
+                            <a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
+                                title="Edit this user"></a>
+                            &nbsp;
+                            <!-- Llamada al metodo get de UserController.deleteUser(...) -->
+                            <a class="fas fa-trash fa-2x icon-dark link-delete"
+                                th:href="@{'/users/delete/' + ${user.id}}" th:userId="${user.id}"
+                                title="Delete this user"></a>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <footer>
-            <p>Shopme Control Panel - Copiright &copy; Shopme</p>
-        </footer>
+        <!-- Div para mensajes sobre paginacion -->
+        <div class="text-center m-1" th:if="${totalItems > 0}">
+            <span>Showing users #[[${startCount}]] to #[[${endCount}]] of
+                [[${totalItems}]]</span>
+        </div>
+
+        <!-- Si la lista de users es 0 -->
+        <div class="text-center m-1" th:unless="${totalItems > 0}">
+            <span>No users found</span>
+        </div>
+
+        <!-- Lista para paginacion -->
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <!-- Muestra la primera pagina, se desactiva el boton si la pagina es 1+ -->
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(1, 'First')"></a>
+                    </li>
+
+                    <!-- Si no es la primera pagina, se desactiva este boton-->
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(${currentPage - 1}, 'Previous')"></a>
+                    </li>
+
+                    <!-- ForEach para mostrar la cantidad de paginas (cambia segun la cons USER_PER_PAGE - UserService) -->
+                    <!-- active solo mostrara la pagina activa -->
+                    <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
+                        th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <a th:replace="common/fragments :: page_link(${i}, ${i})"></a>
+                    </li>
+
+                    <!-- Se desactiva este boton si estoy en la ultima pagina -->
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(${currentPage + 1}, 'Next')"></a>
+                    </li>
+
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(${totalPages}, 'Last')"></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Modal para mensaje de confirmacion al eliminar -->
+        <div class="modal fade text-center" id="confirmModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Delete Confirmation</h4>
+                        <button class="close" type="button" data-dismiss="modal">
+                            &times;
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <span id="confirmText"></span>
+                    </div>
+
+                    <div class="modal-footer">
+                        <a class="btn btn-success" href="" id="yesButton">Yes</a>
+                        <button class="btn btn-danger" type="button" data-dismiss="modal">
+                            No
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <aside>
+            <div th:replace="common/footer :: footer"></div>
+        </aside>
     </div>
 
+    <script type="text/javascript">
+        // JQuery para eliminar el usuario
+        $(document).ready(function () {
+            $(".link-delete").on("click", function (e) {
+                e.preventDefault();
+                // alert($(this).attr("href"));
+                var link = $(this);
+                var userId = link.attr("userId");
+                $("#yesButton").attr("href", link.attr("href"));
+                $("#confirmText").text(
+                    "Are you sure you want to delete this user ID " + userId
+                );
+                $("#confirmModal").modal();
+            });
+        });
+
+        function clearFilter() {
+            window.location = "[[@{/users}]]"
+        }
+    </script>
 </body>
+
 </html>
