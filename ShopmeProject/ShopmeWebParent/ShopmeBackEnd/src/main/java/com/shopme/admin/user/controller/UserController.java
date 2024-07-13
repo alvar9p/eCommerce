@@ -107,7 +107,13 @@ public class UserController {
 
         // Este mensaje se va a mostrar cuando el usuario se ha creado correctamente
         redirectAttributes.addFlashAttribute("message", "The user has been saved successfully.");
-        return "redirect:/users";
+
+        return getRedirectURLtoAffectedUser(user);
+    }
+
+    private String getRedirectURLtoAffectedUser(User user){
+        String firstPartOfEmail = user.getEmail().split("@")[0];
+        return "redirect:/users/page/1?sortField=id&sortDir=asc&keyword=" + firstPartOfEmail;
     }
 
     @GetMapping("/users/edit/{id}")
