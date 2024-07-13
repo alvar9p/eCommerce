@@ -1,6 +1,8 @@
 package com.shopme.admin.user.repository;
 
 import com.shopme.common.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -16,6 +18,11 @@ public interface UserRepository extends PagingAndSortingRepository<User, Integer
 
     // Verifica que el ID exista
     public Long countById(Integer id);
+
+    //@Query("SELECT u FROM User u WHERE u.firstName LIKE %?1% OR u.lastName LIKE %?1% OR u.email LIKE %?1%")
+    // Para buscar nombre + apellido en una sola query
+    @Query("SELECT u FROM User u WHERE CONCAT(u.id, ' ', u.email, ' ', u.firstName, ' ', u.lastName) LIKE %?1%")
+    public Page<User> findAll(String keyword, Pageable pageable);
 
     @Query("UPDATE User u SET u.enabled = ?2 WHERE u.id = ?1")
     @Modifying

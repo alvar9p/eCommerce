@@ -33,7 +33,7 @@ public class UserController {
     public String listFirstPage(Model model){
         // Se agrega para que al hacer click en 'Users', solo muestre la primera pagina
         // firstName viene de la clase User
-        return listByPage(1, model, "firstName", "asc");
+        return listByPage(1, model, "firstName", "asc", null);
 
         // Se comenta para NO listar el total de users
         /* List<User> users = userService.listAll();
@@ -44,9 +44,10 @@ public class UserController {
     // Se agrega este metodo para mostrar cierta cantidad de usuarios por pagina
     @GetMapping("/users/page/{pageNum}")
     public String listByPage(@PathVariable(name = "pageNum") int pageNum, Model model,
-                             @Param("sortField") String sortField, @Param("sortDir") String sortDir){
+                             @Param("sortField") String sortField, @Param("sortDir") String sortDir,
+                             @Param("keyword") String keyword){
 
-        Page<User> page = userService.listByPage(pageNum, sortField, sortDir);
+        Page<User> page = userService.listByPage(pageNum, sortField, sortDir, keyword);
         List<User> listUsers = page.getContent();
 
         long startCount = (pageNum - 1) * UserService.USER_PER_PAGE + 1;
@@ -67,6 +68,7 @@ public class UserController {
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", reverseSortDir);
+        model.addAttribute("keyword", keyword);
         return "users";
     }
 
