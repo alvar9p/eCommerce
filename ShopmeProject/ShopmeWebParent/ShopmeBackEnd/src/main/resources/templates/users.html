@@ -26,6 +26,9 @@
             <h2>Manage Users</h2>
             <!-- Para crear un nuevo usuario, llama a UserController.newUser(Model model) -->
             <a th:href="@{/users/new}">Create New User</a>
+            &nbsp;|&nbsp;
+            <!-- Para exportar a CSV -->
+            <a th:href="@{/users/export/csv}">Export to CSV</a>
         </div>
 
         <div class="alert alert-success text-center" th:if="${message != null}">

@@ -14,7 +14,9 @@
 
     <a th:fragment="page_link(pageNum, label)" class="page-link"
         th:href="@{'/users/page/' + ${pageNum} + '?sortField=' + ${sortField} 
-            + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">[[${label}]]</a>
+            + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+        [[${label}]]
+    </a>
 
 
 </body>

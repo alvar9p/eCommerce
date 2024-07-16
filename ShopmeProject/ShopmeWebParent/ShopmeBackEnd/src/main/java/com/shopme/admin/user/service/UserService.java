@@ -34,7 +34,8 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public List<User> listAll(){
-        return (List<User>) userRepository.findAll();
+        // Para listar en asc order
+        return (List<User>) userRepository.findAll(Sort.by("firstName").ascending());
     }
 
     // Se modifica para hacer Sort de los usuarios

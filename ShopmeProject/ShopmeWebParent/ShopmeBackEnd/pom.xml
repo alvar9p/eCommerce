@@ -17,7 +17,7 @@
 
 	<artifactId>ShopmeBackEnd</artifactId>
 	<name>ShopmeBackEnd</name>
-	<description>Shopme Admin projectBackEnd</description>
+	<description>Shopme Admin Project - BackEnd</description>
 
 	<properties>
 		<java.version>17</java.version>
@@ -25,6 +25,12 @@
 
 	<!-- Heredan de project parent -->
 	<dependencies>
+		<!-- Para exportar a CSV -->
+		<dependency>
+			<groupId>net.sf.supercsv</groupId>
+			<artifactId>super-csv</artifactId>
+			<version>2.4.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
