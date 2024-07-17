@@ -5,6 +5,7 @@ import com.shopme.admin.user.service.UserService;
 import com.shopme.admin.utils.FileUploadUtil;
 import com.shopme.admin.utils.UserCsvExporterUtil;
 import com.shopme.admin.utils.UserExcelExporterUtil;
+import com.shopme.admin.utils.UserPdfExporterUtil;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,6 +171,13 @@ public class UserController {
     public void exportToExcel(HttpServletResponse response) throws IOException{
         List<User> users = userService.listAll();
         UserExcelExporterUtil exporter = new UserExcelExporterUtil();
+        exporter.export(users, response);
+    }
+
+    @GetMapping("/users/export/pdf")
+    public void exportToPDF(HttpServletResponse response) throws IOException{
+        List<User> users = userService.listAll();
+        UserPdfExporterUtil exporter = new UserPdfExporterUtil();
         exporter.export(users, response);
     }
 }

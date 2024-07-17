@@ -32,6 +32,9 @@
             &nbsp;|&nbsp;
             <!-- Para exportar a CSV -->
             <a th:href="@{/users/export/excel}">Export to Excel</a>
+            &nbsp;|&nbsp;
+            <!-- Para exportar a PDF -->
+            <a th:href="@{/users/export/pdf}">Export to PDF</a>
         </div>
 
         <div class="alert alert-success text-center" th:if="${message != null}">
