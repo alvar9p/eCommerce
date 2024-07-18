@@ -25,7 +25,16 @@
         <div>
             <h2>Manage Users</h2>
             <!-- Para crear un nuevo usuario, llama a UserController.newUser(Model model) -->
-            <a th:href="@{/users/new}">Create New User</a>
+            <a th:href="@{/users/new}" class="fas fa-user-plus fa-2x icon-dark mr-2"></a>
+
+            <!-- Para exportar a CSV -->
+            <a th:href="@{/users/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+
+            <!-- Para exportar a CSV -->
+            <a th:href="@{/users/export/excel}" class="fas fa-file-excel fa-2x icon-dark mr-2"></a>
+
+            <!-- Para exportar a PDF -->
+            <a th:href="@{/users/export/pdf}" class="fas fa-file-pdf fa-2x icon-dark mr-2"></a>
         </div>
 
         <div class="alert alert-success text-center" th:if="${message != null}">
@@ -42,29 +51,40 @@
                 <!-- keyword viene del controlador -->
                 <input class="form-control m-3" type="search" name="keyword" th:value="${keyword}" required />
                 &nbsp;&nbsp;
-                <input class="btn btn-primary" type="submit" value="Search" />
+
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+
                 &nbsp;&nbsp;
-                <input class="btn btn-secondary" type="button" value="Clear" onclick="clearFilter()">
+                <button class="btn btn-secondary" type="button" onclick="clearFilter()">
+                    <i class="fas fa-eraser"></i>
+                </button>
             </form>
         </div>
 
-        <div>
+        <!-- Responsive en M-L -->
+        <div class="full-details">
             <table class="table table-bordered table-striped table-hover table-responsive-xl">
                 <thead class="thead-dark">
                     <tr>
-                        <th th:replace="common/fragments :: column_link('id', 'User ID')" />
+                        <th class="hideable-column">
+                            <th class="hideable-column" th:replace="common/fragments :: column_link('id', 'User ID', 'tag')" />
+                        </th>
 
                         <th>Photos</th>
 
-                        <th th:replace="common/fragments :: column_link('email', 'Email')" />
+                        <th class="hideable-column">
+                            <th th:replace="common/fragments :: column_link('email', 'Email', 'tag')" />
+                        </th>
 
-                        <th th:replace="common/fragments :: column_link('firstName', 'First Name')" />
+                        <th th:replace="common/fragments :: column_link('firstName', 'First Name', 'none')" />
 
-                        <th th:replace="common/fragments :: column_link('lastName', 'Last Name')" />
+                        <th th:replace="common/fragments :: column_link('lastName', 'Last Name', 'none')" />
 
                         <th>Roles</th>
 
-                        <th th:replace="common/fragments :: column_link('enabled', 'Enabled')" />
+                        <th th:replace="common/fragments :: column_link('enabled', 'Enabled', 'none')" />
 
                         <th></th>
                     </tr>
@@ -73,14 +93,14 @@
                 <tbody>
                     <!-- La variable users viene de UserController.listAll(Model model) -->
                     <tr th:each="user : ${users}">
-                        <td th:text="${user.id}" class="text-center"></td>
+                        <td th:text="${user.id}" class="hideable-column"></td>
                         <td>
                             <!-- Se agrega para desplegar la imagen con el nuevo getter de la clase User -->
                             <spanv th:if="${user.photos == null}" class="fas fa-portrait fa-2x icon-silver"></spanv>
                             <img th:if="${user.photos != null}" th:src="@{${user.photoImagePath}}"
                                 style="width: 100px" />
                         </td>
-                        <td th:text="${user.email}"></td>
+                        <td class="hideable-column" th:text="${user.email}"></td>
                         <td th:text="${user.firstName}"></td>
                         <td th:text="${user.lastName}"></td>
                         <td th:text="${user.roles}"></td>
@@ -110,6 +130,39 @@
             </table>
         </div>
 
+        <!-- Responsive en S -->
+        <div class="less-details">
+            <div class="row m-1" th:each="user : ${users}">
+                <div class="col-4">
+                    <spanv th:if="${user.photos == null}" class="fas fa-portrait fa-2x icon-silver"></spanv>
+                    <img th:if="${user.photos != null}" th:src="@{${user.photoImagePath}}" style="width: 100px" />
+                </div>
+
+                <div class="col-8">
+                    <div>[[${user.fullName}]]</div>
+                    <div>[[${user.roles}]]</div>
+                    <div class="mt-2">
+                        <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
+                            th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user"></a>
+
+                        <a th:if="${user.enabled == false}" class="fas fa-circle fa-2x icon-dark"
+                            th:href="@{'/users/' + ${user.id} + '/enabled/true'}" title="Enable this user"></a>
+                        &nbsp;
+                        <!-- Llamada al metodo get de UserController.editUser(...) -->
+                        <a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
+                            title="Edit this user"></a>
+                        &nbsp;
+                        <!-- Llamada al metodo get de UserController.deleteUser(...) -->
+                        <a class="fas fa-trash fa-2x icon-dark link-delete" th:href="@{'/users/delete/' + ${user.id}}"
+                            th:userId="${user.id}" title="Delete this user"></a>
+                    </div>
+                </div>
+
+                <div>&nbsp;</div>
+
+            </div>
+        </div>
+
         <!-- Div para mensajes sobre paginacion -->
         <div class="text-center m-1" th:if="${totalItems > 0}">
             <span>Showing users #[[${startCount}]] to #[[${endCount}]] of
@@ -124,7 +177,7 @@
         <!-- Lista para paginacion -->
         <div th:if="${totalPages > 1}">
             <nav>
-                <ul class="pagination justify-content-center">
+                <ul class="pagination justify-content-center flex-wrap">
                     <!-- Muestra la primera pagina, se desactiva el boton si la pagina es 1+ -->
                     <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
                         <a th:replace="common/fragments :: page_link(1, 'First')"></a>

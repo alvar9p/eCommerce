@@ -1,5 +1,5 @@
 <body>
-    <th th:fragment="column_link(fieldName, columnLabel)">
+    <th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
         <a class="text-white" 
             th:href="@{'/users/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' 
                 + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
@@ -14,7 +14,9 @@
 
     <a th:fragment="page_link(pageNum, label)" class="page-link"
         th:href="@{'/users/page/' + ${pageNum} + '?sortField=' + ${sortField} 
-            + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">[[${label}]]</a>
+            + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+        [[${label}]]
+    </a>
 
 
 </body>
