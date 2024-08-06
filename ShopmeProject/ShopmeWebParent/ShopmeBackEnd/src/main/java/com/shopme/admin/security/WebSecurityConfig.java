@@ -19,9 +19,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    // Se sobreescribe este metodo para permitir entrar sin autenticarse
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests().anyRequest().permitAll();
+        // Se sobreescribe este metodo para permitir entrar sin autenticarse
+        httpSecurity.authorizeHttpRequests().anyRequest()
+                .authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll();
+    }
+
+    // Carpetas que se ignoran para ver la pagina del login
+    @Override
+    public void configure(WebSecurity web) throws Exception{
+        web.ignoring().antMatchers("/images/**", "js/", "/webjars/**");
     }
 }
