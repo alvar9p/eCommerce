@@ -47,10 +47,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.authorizeHttpRequests().anyRequest()
                 .authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .usernameParameter("email")
-                .permitAll();
+                    .formLogin()
+                    .loginPage("/login")
+                    .usernameParameter("email")
+                    .permitAll()
+                .and()
+                    .logout()
+                    .permitAll();
     }
 
     // Carpetas que se ignoran para ver la pagina del login
