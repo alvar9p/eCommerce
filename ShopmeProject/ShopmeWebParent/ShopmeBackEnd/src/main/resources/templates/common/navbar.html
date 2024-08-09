@@ -57,6 +57,19 @@
             <a class="nav-link" th:href="@{/settings}">Settings</a>
           </li>
 
+          <!-- Icono de usuario en la barra de navegacion -->
+          <li>
+            <span class="fas fa-user fa-2x icon-silver"></span>
+          </li>
+
+          <li class="nav-item dropdown">
+            <!-- principal.fullName llama al metodo getFullName de la clase ShopmeUserDetails -->
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" sec:authentication="principal.fullName"></a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#">Logout</a>
+            </div>
+          </li>
+
         </ul>
       </div>
 

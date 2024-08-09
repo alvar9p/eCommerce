@@ -67,4 +67,9 @@ public class ShopmeUserDetails implements UserDetails{
     public boolean isEnabled() {
         return user.isEnabled();
     }
+
+    // Para mostrar nombre y apellido en la barra de navegacion
+    public String getFullName(){
+        return this.user.getFirstName() + " " + user.getLastName();
+    }
 }
