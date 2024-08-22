@@ -44,6 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         // Se sobreescribe este metodo para permitir entrar sin autenticarse
+        // rememberMe() para guardar al usuario logeado (cerrar navegador)
+        // 7 dias * 24 horas * 60 minutos (validity)
         httpSecurity.authorizeHttpRequests().anyRequest()
                 .authenticated()
                 .and()
@@ -53,7 +55,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll()
                 .and()
                     .logout()
-                    .permitAll();
+                    .permitAll()
+                .and()
+                    .rememberMe()
+                    .key("AbcDefgHijKlmnOprqs_1234567890")
+                    .tokenValiditySeconds(7 * 24 * 60 * 60);
     }
 
     // Carpetas que se ignoran para ver la pagina del login
