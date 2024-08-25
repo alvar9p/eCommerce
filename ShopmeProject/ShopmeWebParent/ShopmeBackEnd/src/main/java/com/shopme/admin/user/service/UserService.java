@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
 @Transactional
 public class UserService {
 
-    public static final int USER_PER_PAGE = 4;
+    public static final int USER_PER_PAGE = 5;
 
     @Autowired
     private UserRepository userRepository;
@@ -32,6 +32,10 @@ public class UserService {
     // Se inyecta para encriptar las passwords
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    public User getByEmail(String email){
+        return userRepository.getUserByEmail(email);
+    }
 
     public List<User> listAll(){
         // Para listar en asc order
@@ -71,6 +75,26 @@ public class UserService {
             encodePassword(user);
         }
         return userRepository.save(user);
+    }
+
+    // Se utiliza para actualizar los datos del usuario
+    public User updateAccount(User userInForm){
+        User userInDB = userRepository.findById(userInForm.getId()).get();
+
+        if (!userInForm.getPassword().isEmpty()){
+            userInDB.setPassword(userInForm.getPassword());
+            encodePassword(userInDB);
+        }
+
+        if (userInForm.getPhotos() != null){
+            userInDB.setPhotos(userInForm.getPhotos());
+        }
+
+        // Para mostrarlo en el navbar
+        userInDB.setFirstName(userInForm.getFirstName());
+        userInDB.setLastName(userInForm.getLastName());
+
+        return userRepository.save(userInDB);
     }
 
     private void encodePassword(User user){

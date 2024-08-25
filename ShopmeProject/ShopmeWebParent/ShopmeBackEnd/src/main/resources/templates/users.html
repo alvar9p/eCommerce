@@ -1,26 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
-
-    <!-- Se muestra al clickear en Users en el navbar -->
-    <title>Home - Shopme Admin</title>
-
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
-    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-</head>
+<head th:replace="common/head :: head('Users - Shopme Admin')" />
 
 <body>
     <div class="container-fluid">
+
         <!-- Navbar -->
-        <aside>
-            <div th:replace="common/navbar :: navbar"></div>
-        </aside>
+        <div th:replace="common/navbar :: navbar"></div>
 
         <div>
             <h2>Manage Users</h2>
@@ -233,9 +220,8 @@
         </div>
 
         <!-- Footer -->
-        <aside>
-            <div th:replace="common/footer :: footer"></div>
-        </aside>
+        <div th:replace="common/footer :: footer"></div>
+
     </div>
 
     <script type="text/javascript">

@@ -35,7 +35,7 @@ public class User {
     // JoinTable es la tabla intermedia
     // joinColumn para el nombre del id de users en la tabla intermedia
     // inverseJoinColumns para el nombre del id de roles en la tabla intermedia
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),

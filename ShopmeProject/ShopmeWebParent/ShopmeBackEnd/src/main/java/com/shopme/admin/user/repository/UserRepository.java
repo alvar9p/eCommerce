@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<User, Integer> {
 
+    // Define una consulta personalizada a Spring JPA
+    // Selecciona una entidad User donde el campo email coincide con el valor del parámetro :email
     @Query("SELECT u FROM User u WHERE u.email = :email")
     public User getUserByEmail(@Param("email") String email);
 
