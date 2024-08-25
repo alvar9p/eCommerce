@@ -1,27 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<!-- Se parametriza: Viene de UserControler.newUser(...) -->
 
-    <!-- Se parametriza: Viene de UserControler.newUser(...) -->
-    <title>[[${pageTitle}]]</title>
-
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
-    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-
-</head>
+<head th:replace="common/head :: head(${pageTitle})" />
 
 <body>
 
     <div class="container-fluid">
 
         <!-- Navbar -->
-        <aside>
-            <div th:replace="common/navbar :: navbar"></div>
-        </aside>
+        <div th:replace="common/navbar :: navbar"></div>
 
         <div>
             <!-- Se parametriza: Viene de UserControler.newUser(...) -->
@@ -106,9 +95,9 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Photos:</label>
                     <div class="col-sm-8">
-                        <input type="hidden" th:field="*{photos}"  />
+                        <input type="hidden" th:field="*{photos}" />
                         <!-- Agregar el noombre image para procesarlo en el backend -->
-                        <input class="mb-2" type="file" id="fileImage" name="image" accept="image/png, image/jpeg"/>
+                        <input class="mb-2" type="file" id="fileImage" name="image" accept="image/png, image/jpeg" />
                         <img class="img-fluid" id="thumbnail" alt="Photos preview" th:src="@{${user.photoImagePath}}" />
                     </div>
                 </div>
@@ -146,7 +135,10 @@
                 </div>
             </div>
         </div>
-        
+
+        <!-- Footer -->
+        <div th:replace="common/footer :: footer"></div>
+
     </div>
 
     <script type="text/javascript">
@@ -156,14 +148,14 @@
                 window.location = "[[@{/users}]]";
             });
 
-            $("#fileImage").change(function(){
+            $("#fileImage").change(function () {
                 fileSize = this.files[0].size;
                 // alert("File size: " + fileSize);
 
-                if(fileSize > 1048576){
+                if (fileSize > 1048576) {
                     this.setCustomValidity("You must choose an image less than 1MB!");
                     this.reportValidity();
-                }else{
+                } else {
                     this.setCustomValidity("");
                     showImageThumbnail(this);
                 }
@@ -172,10 +164,10 @@
             })
         });
 
-        function showImageThumbnail(fileInput){
+        function showImageThumbnail(fileInput) {
             var file = fileInput.files[0];
             var reader = new FileReader();
-            reader.onload = function(e){
+            reader.onload = function (e) {
                 $("#thumbnail").attr("src", e.target.result);
             };
 

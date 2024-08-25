@@ -72,4 +72,13 @@ public class ShopmeUserDetails implements UserDetails{
     public String getFullName(){
         return this.user.getFirstName() + " " + user.getLastName();
     }
+
+    // Se pasaran los parametros para mostrar el nombre actualizado en el navbar
+    public void setFirstName(String firstName){
+        this.user.setFirstName(firstName);
+    }
+
+    public void setLastName(String lastName){
+        this.user.setLastName(lastName);
+    }
 }
