@@ -10,7 +10,11 @@
         <div th:replace="common/navbar :: navbar"></div>
 
         <div>
-            <h1>Shopme Control Panel</h1>
+            <h2>Shopme Control Panel</h2>
+            Welcome
+            <!-- principal.fullName llama al metodo getFullName de la clase ShopmeUserDetails -->
+            <a th:href="@{/account}" sec:authentication="principal.fullName"></a>
+            <span sec:authentication="principal.authorities"></span>
         </div>
 
         <!-- Footer -->
@@ -19,4 +23,5 @@
     </div>
 
 </body>
+
 </html>

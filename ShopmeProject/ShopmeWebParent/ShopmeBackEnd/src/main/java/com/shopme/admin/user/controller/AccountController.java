@@ -28,7 +28,7 @@ public class AccountController {
         String email = loggedUsed.getUsername();
         User user = userService.getByEmail(email);
         model.addAttribute("user", user);
-        return "account_form";
+        return "users/account_form";
     }
 
     // Recibe el formulario de user_form.html
