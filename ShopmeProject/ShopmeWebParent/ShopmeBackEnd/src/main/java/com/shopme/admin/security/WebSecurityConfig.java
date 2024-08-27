@@ -46,8 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Se sobreescribe este metodo para permitir entrar sin autenticarse
         // rememberMe() para guardar al usuario logeado (cerrar navegador)
         // 7 dias * 24 horas * 60 minutos (validity)
-        httpSecurity.authorizeHttpRequests().anyRequest()
-                .authenticated()
+        httpSecurity.authorizeRequests()
+                .antMatchers("/users/**").hasAuthority("Admin")
+                .anyRequest().authenticated()
                 .and()
                     .formLogin()
                     .loginPage("/login")
