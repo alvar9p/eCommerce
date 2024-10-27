@@ -23,6 +23,21 @@ public class Category {
 
     private boolean enabled;
 
+    public Category(String name) {
+        this.name = name;
+        this.alias = name;
+        this.image = "default.png";
+    }
+
+    public Category(Integer id) {
+        this.id = id;
+    }
+
+    public Category(String name, Category parent) {
+        this(name);
+        this.parent = parent;
+    }
+
     @OneToOne
     @JoinColumn(name = "parent_id")
     private Category parent;
