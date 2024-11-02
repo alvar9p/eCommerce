@@ -23,6 +23,9 @@ public class Category {
 
     private boolean enabled;
 
+    public Category() {
+    }
+
     public Category(String name) {
         this.name = name;
         this.alias = name;
