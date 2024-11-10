@@ -1,6 +1,6 @@
 package com.shopme.admin.category;
 
-import com.shopme.admin.category.Repository.CategoryRepository;
+import com.shopme.admin.category.repository.CategoryRepository;
 import com.shopme.common.entity.Category;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
