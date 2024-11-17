@@ -39,9 +39,24 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Parent Category:</label>
                     <div class="col-sm-8">
-                        <select>
-
+                        <select class="form-control" th:field="*{parent}">
+                            <option value="0">[No Parent]</option>
+                            <th:block th:each="cat : ${listCategories}">
+                                <option th:value="${cat.id}">[[${cat.name}]]</option>
+                            </th:block>
                         </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Image:</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" th:field="*{image}" />
+                        <!-- Agregar el nombre image para procesarlo en el backend -->
+                        <input class="mb-2" type="file" id="fileImage" name="image" accept="image/png, image/jpeg" />
+                        <div class="mt-2">
+                            <img class="img-fluid" id="thumbnail" alt="Image preview" th:src="@{/images/image-thumbnail.png}"/>
+                        </div>
                     </div>
                 </div>
 
@@ -50,16 +65,6 @@
                     <label class="col-sm-4 col-form-label">Enabled:</label>
                     <div class="col-sm-8">
                         <input type="checkbox" th:field="*{enabled}">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Image:</label>
-                    <div class="col-sm-8">
-                        <input type="hidden" th:field="*{image}" />
-                        <!-- Agregar el noombre image para procesarlo en el backend -->
-                        <input class="mb-2" type="file" id="fileImage" name="image" accept="image/png, image/jpeg" />
-                        <img class="img-fluid" id="thumbnail" alt="Image preview"/>
                     </div>
                 </div>
 
