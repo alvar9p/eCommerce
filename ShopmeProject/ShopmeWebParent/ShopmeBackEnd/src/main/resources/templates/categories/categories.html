@@ -56,7 +56,10 @@
             <tbody>
             <tr th:each="cat : ${listCategories}">
                 <td th:text="${cat.id}"></td>
-                <td></td>
+                <td>
+                    <!-- Llama al metodo getImagePath de Category entity -->
+                    <img class="img-fluid" th:src="@{${cat.imagePath}}" style="width: 100px;"/>
+                </td>
                 <td th:text="${cat.name}"></td>
                 <td th:text="${cat.alias}"></td>
                 <td>
