@@ -53,14 +53,15 @@
                     <div class="col-sm-8">
                         <input type="hidden" th:field="*{image}" />
                         <!-- Agregar el nombre image para procesarlo en el backend -->
-                        <input class="mb-2" type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg" required/>
+                        <input class="mb-2" type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg" 
+                            th:required="${category.imagePath == null}"/>
                         <div class="mt-2">
-                            <img class="img-fluid" id="thumbnail" alt="Image preview" th:src="@{/images/image-thumbnail.png}"/>
+                            <img class="img-fluid" id="thumbnail" alt="Image preview" th:src="@{${category.imagePath}}"/>
                         </div>
                     </div>
                 </div>
 
-                <!-- Si se selecciona este chechbox, se setea user.setEnabled(true) en el backend -->
+                <!-- Si se selecciona este chechbox, se setea category.setEnabled(true) en el backend -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Enabled:</label>
                     <div class="col-sm-8">

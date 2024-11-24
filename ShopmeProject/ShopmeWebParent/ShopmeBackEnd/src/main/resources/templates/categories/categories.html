@@ -62,14 +62,23 @@
                 </td>
                 <td th:text="${cat.name}"></td>
                 <td th:text="${cat.alias}"></td>
+
                 <td>
-                    <a th:if="${cat.enabled == true}" class="fas fa-check-circle fa-2x icon-green"></a>
-                    <a th:if="${cat.enabled == false}" class="fas fa-circle fa-2x icon-dark"></a>
+                    <a th:if="${cat.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
+                        th:href="@{'/categories/' + ${cat.id} + '/enabled/false'}" title="Disable this category"></a>
+                    <a th:if="${cat.enabled == false}" class="fas fa-circle fa-2x icon-dark" 
+                    th:href="@{'/categories/' + ${cat.id} + '/enabled/true'}"title="Enable this category"></a>
                 </td>
+
                 <td>
-                    <a class="fas fa-edit fa-2x icon-green" title="Edit this user"></a>
+                    <!-- Llamada al metodo get de CategoryController.editUser(...) -->
+                    <a class="fas fa-edit fa-2x icon-green" th:href="@{'/categories/edit/' + ${cat.id}}"
+                        title="Edit this category"></a>
                     &nbsp;
-                    <a class="fas fa-trash fa-2x icon-dark link-delete" title="Delete this user"></a>
+                    <!-- Llamada al metodo get de CategoryController.deleteUser(...) -->
+                    <a class="fas fa-trash fa-2x icon-dark link-delete"
+                        th:href="@{'/categories/delete/' + ${cat.id}}" th:userId="${cat.id}"
+                        title="Delete this category"></a>
                 </td>
             </tr>
             </tbody>

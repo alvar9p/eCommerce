@@ -1,15 +1,19 @@
 package com.shopme.admin.category.service;
 
+import com.shopme.admin.category.exception.CategoryNotFoundException;
 import com.shopme.admin.category.repository.CategoryRepository;
 import com.shopme.common.entity.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
+@Transactional
 public class CategoryService {
 
     @Autowired
@@ -85,5 +89,17 @@ public class CategoryService {
             categoriesUsedInForm.add(Category.copyIdAndName(subCategory.getId(), name));
             listSubCategoriesUsedInForm(categoriesUsedInForm, subCategory, newSubLevel);
         }
+    }
+
+    public Category get(Integer id) throws CategoryNotFoundException{
+        try{
+            return categoryRepository.findById(id).get();
+        }catch (NoSuchElementException ex){
+            throw new CategoryNotFoundException("Could not find any category with ID " + id);
+        }
+    }
+
+    public void updateCategoryEnabledStatus(Integer id, boolean enabled){
+        categoryRepository.updateEnabledStatus(id, enabled);
     }
 }
