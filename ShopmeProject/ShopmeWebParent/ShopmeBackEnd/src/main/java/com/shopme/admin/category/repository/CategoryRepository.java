@@ -14,7 +14,13 @@ public interface CategoryRepository extends PagingAndSortingRepository<Category,
     @Query("SELECT c FROM Category c WHERE c.parent.id is NULL")
     public List<Category> findRootCategories();
 
+    // Funciona con la anotacion Transactional en la clase Service
     @Query("UPDATE Category c SET c.enabled = ?2 WHERE c.id = ?1")
     @Modifying
     public void updateEnabledStatus(Integer id, boolean enabled);
+
+    // Para validar que la categoria sea unica
+    public Category findByName(String name);
+
+    public Category findByAlias(String alias);
 }
