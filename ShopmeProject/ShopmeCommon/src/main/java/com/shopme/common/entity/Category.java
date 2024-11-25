@@ -71,6 +71,12 @@ public class Category {
         this.parent = parent;
     }
 
+    public Category(Integer id, String name, String alias) {
+        this.id = id;
+        this.name = name;
+        this.alias = alias;
+    }
+
     @OneToOne
     @JoinColumn(name = "parent_id")
     private Category parent;

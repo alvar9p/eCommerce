@@ -12,7 +12,7 @@
         </div>
 
         <form th:action="@{/categories/save}" method="post" style="max-width: 700px; margin: 0 auto" th:object="${category}"
-            enctype="multipart/form-data">
+            enctype="multipart/form-data" onsubmit="return checkUnique(this)">
 
             <!-- Esconde el ID porque no es necesario modificarlo en este form -->
             <input type="hidden" th:field="*{id}" />
@@ -109,6 +109,24 @@
     <script type="text/javascript">
         // Para utilzar la function de common_form
         moduleURL = "[[@{/categories}]]";
+
+        function checkUnique(form){
+            var catId = $("#id").val();
+            var catName = $("#name").val();
+            var catAlias = $("#alias").val();
+            var csrfValue = $("input[name='_csrf']").val();
+            var url = "[[@{/category/check_unique}]]";
+            // Deben hacer match con los parametros que recibe el controlador
+            var params = {id: catId, name: catName, alias: catAlias, _csrf: csrfValue};
+
+            $.post(url, params, function(response){
+                alert(response);
+            }).fail(function(){
+                alert('failed');
+            })
+            
+            return false;
+        }
 
     </script>
     <script th:src="@{/js/common_form.js}"></script>
