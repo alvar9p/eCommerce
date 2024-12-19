@@ -69,51 +69,36 @@
                 <td th:text="${cat.alias}"></td>
 
                 <td>
-                    <a th:if="${cat.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
-                        th:href="@{'/categories/' + ${cat.id} + '/enabled/false'}" title="Disable this category"></a>
-                    <a th:if="${cat.enabled == false}" class="fas fa-circle fa-2x icon-dark" 
-                    th:href="@{'/categories/' + ${cat.id} + '/enabled/true'}"title="Enable this category"></a>
+                    <div th:replace="common/fragments :: category_status" />
                 </td>
 
                 <td>
-                    <!-- Llamada al metodo get de CategoryController.editUser(...) -->
-                    <a class="fas fa-edit fa-2x icon-green" th:href="@{'/categories/edit/' + ${cat.id}}"
-                        title="Edit this category"></a>
-                    &nbsp;
-                    <!-- Llamada al metodo get de CategoryController.deleteUser(...) -->
-                    <a class="fas fa-trash fa-2x icon-dark link-delete"
-                        th:href="@{'/categories/delete/' + ${cat.id}}" th:userId="${cat.id}"
-                        title="Delete this category"></a>
+                    <div th:replace="common/fragments :: category_actions" />
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 
+    <!-- -->
+    <div th:replace="common/modal_fragments :: confirm_modal" />
+
     <!-- Footer -->
     <div th:replace="common/footer :: footer"></div>
 
 </div>
 
+<script th:src="@{/js/common_list.js}"></script>
 <script type="text/javascript">
-        // JQuery para eliminar el usuario
+    // JQuery para eliminar el usuario - se mueve funcion a archivo common
+    moduleURL = "[[@{/categories}]]"
+        
         $(document).ready(function () {
             $(".link-delete").on("click", function (e) {
                 e.preventDefault();
-                // alert($(this).attr("href"));
-                var link = $(this);
-                var userId = link.attr("userId");
-                $("#yesButton").attr("href", link.attr("href"));
-                $("#confirmText").text(
-                    "Are you sure you want to delete this user ID " + userId
-                );
-                $("#confirmModal").modal();
+                showDeleteConfirmModal($(this), 'category');
             });
         });
-
-        function clearFilter() {
-            window.location = "[[@{/users}]]"
-        }
     </script>
 </body>
 

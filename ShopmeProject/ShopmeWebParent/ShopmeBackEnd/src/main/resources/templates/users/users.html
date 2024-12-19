@@ -109,7 +109,7 @@
                             &nbsp;
                             <!-- Llamada al metodo get de UserController.deleteUser(...) -->
                             <a class="fas fa-trash fa-2x icon-dark link-delete"
-                                th:href="@{'/users/delete/' + ${user.id}}" th:userId="${user.id}"
+                                th:href="@{'/users/delete/' + ${user.id}}" th:entityId="${user.id}"
                                 title="Delete this user"></a>
                         </td>
                     </tr>
@@ -219,30 +219,25 @@
             </div>
         </div>
 
+        <div th:replace="common/modal_fragments :: confirm_modal" />
+
         <!-- Footer -->
         <div th:replace="common/footer :: footer"></div>
 
     </div>
 
+    <script th:src="@{/js/common_list.js}"></script>
     <script type="text/javascript">
-        // JQuery para eliminar el usuario
+
+    // Se hace refactor, la logica esta en common_list.js
+    moduleURL = "[[@{/users}]]"
+        
         $(document).ready(function () {
             $(".link-delete").on("click", function (e) {
                 e.preventDefault();
-                // alert($(this).attr("href"));
-                var link = $(this);
-                var userId = link.attr("userId");
-                $("#yesButton").attr("href", link.attr("href"));
-                $("#confirmText").text(
-                    "Are you sure you want to delete this user ID " + userId
-                );
-                $("#confirmModal").modal();
+                showDeleteConfirmModal($(this), 'category');
             });
         });
-
-        function clearFilter() {
-            window.location = "[[@{/users}]]"
-        }
     </script>
 </body>
 

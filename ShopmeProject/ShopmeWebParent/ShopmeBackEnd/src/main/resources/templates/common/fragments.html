@@ -18,5 +18,26 @@
         [[${label}]]
     </a>
 
+    <!-- Para habilitar/desabilitar categoriias en categories.html -->
+    <div th:fragment="category_status" th:remove="tag">
+        <a th:if="${cat.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
+            th:href="@{'/categories/' + ${cat.id} + '/enabled/false'}" title="Disable this category"></a>
+            <a th:if="${cat.enabled == false}" class="fas fa-circle fa-2x icon-dark" 
+            th:href="@{'/categories/' + ${cat.id} + '/enabled/true'}"title="Enable this category"></a>
+    </div>
+
+    <!-- Para eliminar categories, tiene variables que se pasan al common_list.js -->
+    <div th:fragment="category_actions" th:remove="tag">
+        <a class="fas fa-edit fa-2x icon-green" th:href="@{'/categories/edit/' + ${cat.id}}"
+        title="Edit this category"></a>
+        &nbsp;
+        <th:block th:if="${cat.hasChildren == false}">
+            <a class="fas fa-trash fa-2x icon-dark link-delete"
+            th:href="@{'/categories/delete/' + ${cat.id}}"
+            th:entityId="${cat.id}"
+            title="Delete this category"></a>
+        </th:block>
+    </div>
+
 
 </body>
