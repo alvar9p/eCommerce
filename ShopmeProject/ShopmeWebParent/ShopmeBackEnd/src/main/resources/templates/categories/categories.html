@@ -80,9 +80,10 @@
         </table>
     </div>
 
+    <!-- Para moverse entre paginas -->
     <div th:replace="common/fragments :: pagination('/categories', 'top-level categories')" />
 
-    <!-- -->
+    <!-- Modal para confirmar eliminar categoria -->
     <div th:replace="common/modal_fragments :: confirm_modal" />
 
     <!-- Footer -->
