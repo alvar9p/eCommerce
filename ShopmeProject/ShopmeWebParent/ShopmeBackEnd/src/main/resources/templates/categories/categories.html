@@ -1,101 +1,98 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="common/head :: head('Categories - Shopme Admin')" />
+
 <body>
-<div class="container-fluid">
+    <div class="container-fluid">
 
-    <!-- Navbar -->
-    <div th:replace="common/navbar :: navbar"></div>
+        <!-- Navbar -->
+        <div th:replace="common/navbar :: navbar"></div>
 
-    <div>
-        <h2>Manage Categories</h2>
-        <!-- Para crear una nueva categoria, llama a CategoryController -->
-        <a th:href="@{/categories/new}" class="fas fa-user-plus fa-2x icon-dark mr-2"></a>
+        <div>
+            <h2>Manage Categories</h2>
+            <!-- Para crear una nueva categoria, llama a CategoryController -->
+            <a th:href="@{/categories/new}" class="fas fa-user-plus fa-2x icon-dark mr-2"></a>
 
-        <!-- Para exportar a CSV -->
-        <a th:href="@{/categories/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+            <!-- Para exportar a CSV -->
+            <a th:href="@{/categories/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+        </div>
+
+        <div class="alert alert-success text-center" th:if="${message != null}">
+            <div th:text="${message}"></div>
+        </div>
+
+        <!-- Buscador -->
+        <div th:replace="common/fragments :: search_form('/categories/page/1')" />
+
+        <!-- Responsive en M-L -->
+        <div class="full-details">
+            <table class="table table-bordered table-striped table-hover table-responsive-xl">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Category Image</th>
+                        <th>
+                            <!-- reverseSortDir (para cambiar de asc a desc) se trabaja en el controlador -->
+                            <a class="text-white"
+                                th:href="@{'/categories/page/' + ${pageNum} + '?sortDir=' + ${reverseSortDir} +  ${keyword != null ? '&keyword=' + keyword : ''}}">Category
+                                Name</a>
+                            <span th:class="${reverseSortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+                            </span>
+                        </th>
+                        <th>Alias</th>
+                        <th>Enabled</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="cat : ${listCategories}">
+                        <td th:text="${cat.id}"></td>
+                        <td>
+                            <!-- Llama al metodo getImagePath de Category entity -->
+                            <img class="img-fluid" th:src="@{${cat.imagePath}}" style="width: 100px;" />
+                        </td>
+                        <td th:text="${cat.name}"></td>
+                        <td th:text="${cat.alias}"></td>
+
+                        <td>
+                            <div th:replace="common/fragments :: category_status" />
+                        </td>
+
+                        <td>
+                            <div th:replace="common/fragments :: category_actions" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mensaje que se muestra si categories es null -->
+        <div class="text-center" th:if="${keyword != null}">
+            <span>Search result does not show categories in hierarchical form</span>
+            <div th:replace="common/fragments :: pagination('/categories', 'categories')" />
+        </div>
+
+        <th:block th:unless="${keyword != null}">
+            <!-- Para moverse entre paginas -->
+            <div th:replace="common/fragments :: pagination('/categories', 'top-level categories')" />
+        </th:block>
+        <!-- Termina condicional -->
+
+        <!-- Modal para confirmar eliminar categoria -->
+        <div th:replace="common/modal_fragments :: confirm_modal" />
+
+        <!-- Footer -->
+        <div th:replace="common/footer :: footer"></div>
+
     </div>
 
-    <div class="alert alert-success text-center" th:if="${message != null}">
-        <div th:text="${message}"></div>
-    </div>
+    <script th:src="@{/js/common_list.js}"></script>
+    <script type="text/javascript">
+        // JQuery para eliminar el usuario - se mueve funcion a archivo common
+        moduleURL = "[[@{/categories}]]"
 
-    <!-- Buscador -->
-    <div>
-        <form class="form-inline m-3" th:action="@{/categories/page/1}">
-            Filter:&nbsp;
-            <!-- keyword viene del controlador -->
-            <input class="form-control m-3" type="search" name="keyword" th:value="${keyword}" required />
-            &nbsp;&nbsp;
-
-            <button class="btn btn-primary" type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-
-            &nbsp;&nbsp;
-            <button class="btn btn-secondary" type="button" onclick="clearFilter()">
-                <i class="fas fa-eraser"></i>
-            </button>
-        </form>
-    </div>
-
-    <!-- Responsive en M-L -->
-    <div class="full-details">
-        <table class="table table-bordered table-striped table-hover table-responsive-xl">
-            <thead class="thead-dark">
-            <tr>
-                <th>ID</th>
-                <th>Category Image</th>
-                <th>
-                    <!-- reverseSortDir (para cambiar de asc a desc) se trabaja en el controlador -->
-                    <a class="text-white" th:href="@{'/categories/page/' + ${pageNum} + '?sortDir=' + ${reverseSortDir}}">Category Name</a>
-                    <span th:class="${reverseSortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
-                </span>
-                </th>
-                <th>Alias</th>
-                <th>Enabled</th>
-                <th></th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="cat : ${listCategories}">
-                <td th:text="${cat.id}"></td>
-                <td>
-                    <!-- Llama al metodo getImagePath de Category entity -->
-                    <img class="img-fluid" th:src="@{${cat.imagePath}}" style="width: 100px;"/>
-                </td>
-                <td th:text="${cat.name}"></td>
-                <td th:text="${cat.alias}"></td>
-
-                <td>
-                    <div th:replace="common/fragments :: category_status" />
-                </td>
-
-                <td>
-                    <div th:replace="common/fragments :: category_actions" />
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Para moverse entre paginas -->
-    <div th:replace="common/fragments :: pagination('/categories', 'top-level categories')" />
-
-    <!-- Modal para confirmar eliminar categoria -->
-    <div th:replace="common/modal_fragments :: confirm_modal" />
-
-    <!-- Footer -->
-    <div th:replace="common/footer :: footer"></div>
-
-</div>
-
-<script th:src="@{/js/common_list.js}"></script>
-<script type="text/javascript">
-    // JQuery para eliminar el usuario - se mueve funcion a archivo common
-    moduleURL = "[[@{/categories}]]"
-        
         $(document).ready(function () {
             $(".link-delete").on("click", function (e) {
                 e.preventDefault();

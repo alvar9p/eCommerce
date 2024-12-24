@@ -36,6 +36,7 @@
         </th:block>
     </div>
 
+    <!-- Paginacion -->
     <div th:fragment="pagination(moduleURL, entityName)" th:remove="tag">
         <!-- Div para mensajes sobre paginacion -->
         <div class="text-center m-1" th:if="${totalItems > 0}">
@@ -80,5 +81,27 @@
                 </ul>
             </nav>
         </div>
+    </div>
+
+    <!-- Buscador -->
+    <div th:fragment="search_form(moduleURL)">
+        <form class="form-inline" th:action="@{${moduleURL}}">
+            <input type="hidden" name="sortField" th:value="${sortField}">
+            <input type="hidden" name="sortDir" th:value="${sortDir}">
+
+            Filter:&nbsp;
+            <!-- keyword viene del controlador -->
+            <input class="form-control m-3" type="search" name="keyword" th:value="${keyword}" required />
+            &nbsp;&nbsp;
+
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+
+            &nbsp;&nbsp;
+            <button class="btn btn-secondary" type="button" onclick="clearFilter()">
+                <i class="fas fa-eraser"></i>
+            </button>
+        </form>
     </div>
 </body>
