@@ -48,7 +48,7 @@
                 <th>Category Image</th>
                 <th>
                     <!-- reverseSortDir (para cambiar de asc a desc) se trabaja en el controlador -->
-                    <a class="text-white" th:href="@{'/categories?sortDir=' + ${reverseSortDir}}">Category Name</a>
+                    <a class="text-white" th:href="@{'/categories/page/' + ${pageNum} + '?sortDir=' + ${reverseSortDir}}">Category Name</a>
                     <span th:class="${reverseSortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
                 </span>
                 </th>
@@ -79,6 +79,8 @@
             </tbody>
         </table>
     </div>
+
+    <div th:replace="common/fragments :: pagination('/categories', 'top-level categories')" />
 
     <!-- -->
     <div th:replace="common/modal_fragments :: confirm_modal" />

@@ -1,11 +1,11 @@
 package com.shopme.admin.category.controller;
 
 import com.shopme.admin.category.exception.CategoryNotFoundException;
+import com.shopme.admin.category.service.CategoryPageInfo;
 import com.shopme.admin.category.service.CategoryService;
 import com.shopme.admin.utils.FileUploadUtil;
 import com.shopme.common.entity.Category;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -26,12 +26,26 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/categories")
-    public String listAll(@RequestParam(value = "sortDir", required = false) String sortDir, Model model){
+    public String listFirstPage(@RequestParam(value = "sortDir", required = false) String sortDir, Model model){
+        return listByPage(1, sortDir, model);
+    }
+
+    @GetMapping("/categories/page/{pageNum}")
+    public String listByPage(@PathVariable(name = "pageNum") Integer pageNum,
+                             @RequestParam(value = "sortDir", required = false) String sortDir,
+                             Model model){
         if (sortDir == null || sortDir.isEmpty()){
             sortDir = "asc";
         }
-        List<Category> listCategories = categoryService.listAll(sortDir);
+        CategoryPageInfo pageInfo = new CategoryPageInfo();
+        List<Category> listCategories = categoryService.listByPage(pageInfo, pageNum, sortDir);
         String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
+
+        model.addAttribute("totalPages", pageInfo.getTotalPages());
+        model.addAttribute("totalItems", pageInfo.getTotalElements());
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("sortField", "name");
+        model.addAttribute("sortField", sortDir);
         model.addAttribute("listCategories", listCategories);
         model.addAttribute("reverseSortDir", reverseSortDir);
         return "categories/categories";

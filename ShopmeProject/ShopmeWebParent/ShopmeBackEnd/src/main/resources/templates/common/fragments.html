@@ -1,6 +1,6 @@
 <body>
     <th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
-        <a class="text-white" 
+        <a class="text-white"
             th:href="@{'/users/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' 
                 + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
             [[${columnLabel}]]
@@ -12,8 +12,7 @@
         </span>
     </th>
 
-    <a th:fragment="page_link(pageNum, label)" class="page-link"
-        th:href="@{'/users/page/' + ${pageNum} + '?sortField=' + ${sortField} 
+    <a th:fragment="page_link(moduleURL, pageNum, label)" class="page-link" th:href="@{${moduleURL} + '/page/' + ${pageNum} + '?sortField=' + ${sortField} 
             + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
         [[${label}]]
     </a>
@@ -22,22 +21,64 @@
     <div th:fragment="category_status" th:remove="tag">
         <a th:if="${cat.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
             th:href="@{'/categories/' + ${cat.id} + '/enabled/false'}" title="Disable this category"></a>
-            <a th:if="${cat.enabled == false}" class="fas fa-circle fa-2x icon-dark" 
-            th:href="@{'/categories/' + ${cat.id} + '/enabled/true'}"title="Enable this category"></a>
+        <a th:if="${cat.enabled == false}" class="fas fa-circle fa-2x icon-dark"
+            th:href="@{'/categories/' + ${cat.id} + '/enabled/true'}" title="Enable this category"></a>
     </div>
 
     <!-- Para eliminar categories, tiene variables que se pasan al common_list.js -->
     <div th:fragment="category_actions" th:remove="tag">
         <a class="fas fa-edit fa-2x icon-green" th:href="@{'/categories/edit/' + ${cat.id}}"
-        title="Edit this category"></a>
+            title="Edit this category"></a>
         &nbsp;
         <th:block th:if="${cat.hasChildren == false}">
-            <a class="fas fa-trash fa-2x icon-dark link-delete"
-            th:href="@{'/categories/delete/' + ${cat.id}}"
-            th:entityId="${cat.id}"
-            title="Delete this category"></a>
+            <a class="fas fa-trash fa-2x icon-dark link-delete" th:href="@{'/categories/delete/' + ${cat.id}}"
+                th:entityId="${cat.id}" title="Delete this category"></a>
         </th:block>
     </div>
 
+    <div th:fragment="pagination(moduleURL, entityName)" th:remove="tag">
+        <!-- Div para mensajes sobre paginacion -->
+        <div class="text-center m-1" th:if="${totalItems > 0}">
+            <span>Showing [[${entityName}]] #[[${startCount}]] to #[[${endCount}]] of
+                [[${totalItems}]]</span>
+        </div>
 
+        <!-- Si la lista de users es 0 -->
+        <div class="text-center m-1" th:unless="${totalItems > 0}">
+            <span>No [[${entityName}]] found</span>
+        </div>
+
+        <!-- Lista para paginacion -->
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center flex-wrap">
+                    <!-- Muestra la primera pagina, se desactiva el boton si la pagina es 1+ -->
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(${moduleURL}, 1, 'First')"></a>
+                    </li>
+
+                    <!-- Si no es la primera pagina, se desactiva este boton-->
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(${moduleURL}, ${currentPage - 1}, 'Previous')"></a>
+                    </li>
+
+                    <!-- ForEach para mostrar la cantidad de paginas (cambia segun la cons USER_PER_PAGE - UserService) -->
+                    <!-- active solo mostrara la pagina activa -->
+                    <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
+                        th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <a th:replace="common/fragments :: page_link(${moduleURL}, ${i}, ${i})"></a>
+                    </li>
+
+                    <!-- Se desactiva este boton si estoy en la ultima pagina -->
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(${moduleURL}, ${currentPage + 1}, 'Next')"></a>
+                    </li>
+
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(${moduleURL}, ${totalPages}, 'Last')"></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 </body>

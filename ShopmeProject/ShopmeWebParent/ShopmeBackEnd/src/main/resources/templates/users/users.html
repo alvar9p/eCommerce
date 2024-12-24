@@ -150,74 +150,7 @@
             </div>
         </div>
 
-        <!-- Div para mensajes sobre paginacion -->
-        <div class="text-center m-1" th:if="${totalItems > 0}">
-            <span>Showing users #[[${startCount}]] to #[[${endCount}]] of
-                [[${totalItems}]]</span>
-        </div>
-
-        <!-- Si la lista de users es 0 -->
-        <div class="text-center m-1" th:unless="${totalItems > 0}">
-            <span>No users found</span>
-        </div>
-
-        <!-- Lista para paginacion -->
-        <div th:if="${totalPages > 1}">
-            <nav>
-                <ul class="pagination justify-content-center flex-wrap">
-                    <!-- Muestra la primera pagina, se desactiva el boton si la pagina es 1+ -->
-                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                        <a th:replace="common/fragments :: page_link(1, 'First')"></a>
-                    </li>
-
-                    <!-- Si no es la primera pagina, se desactiva este boton-->
-                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                        <a th:replace="common/fragments :: page_link(${currentPage - 1}, 'Previous')"></a>
-                    </li>
-
-                    <!-- ForEach para mostrar la cantidad de paginas (cambia segun la cons USER_PER_PAGE - UserService) -->
-                    <!-- active solo mostrara la pagina activa -->
-                    <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
-                        th:each="i : ${#numbers.sequence(1, totalPages)}">
-                        <a th:replace="common/fragments :: page_link(${i}, ${i})"></a>
-                    </li>
-
-                    <!-- Se desactiva este boton si estoy en la ultima pagina -->
-                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                        <a th:replace="common/fragments :: page_link(${currentPage + 1}, 'Next')"></a>
-                    </li>
-
-                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                        <a th:replace="common/fragments :: page_link(${totalPages}, 'Last')"></a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
-        <!-- Modal para mensaje de confirmacion al eliminar -->
-        <div class="modal fade text-center" id="confirmModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Delete Confirmation</h4>
-                        <button class="close" type="button" data-dismiss="modal">
-                            &times;
-                        </button>
-                    </div>
-
-                    <div class="modal-body">
-                        <span id="confirmText"></span>
-                    </div>
-
-                    <div class="modal-footer">
-                        <a class="btn btn-success" href="" id="yesButton">Yes</a>
-                        <button class="btn btn-danger" type="button" data-dismiss="modal">
-                            No
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div th:replace="common/fragments :: pagination('/users', 'users')" />
 
         <div th:replace="common/modal_fragments :: confirm_modal" />
 
