@@ -1,114 +1,118 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="common/head :: head('Categories - Shopme Admin')" />
+
 <body>
-<div class="container-fluid">
+    <div class="container-fluid">
 
-    <!-- Navbar -->
-    <div th:replace="common/navbar :: navbar"></div>
+        <!-- Navbar -->
+        <div th:replace="common/navbar :: navbar"></div>
 
-    <div>
-        <h2>Manage Categories</h2>
-        <!-- Para crear una nueva categoria, llama a CategoryController -->
-        <a th:href="@{/categories/new}" class="fas fa-user-plus fa-2x icon-dark mr-2"></a>
+        <div>
+            <h2>Manage Categories</h2>
+            <!-- Para crear una nueva categoria, llama a CategoryController -->
+            <a th:href="@{/categories/new}" class="fas fa-user-plus fa-2x icon-dark mr-2"></a>
 
-        <!-- Para exportar a CSV -->
-        <a th:href="@{/categories/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+            <!-- Para exportar a CSV -->
+            <a th:href="@{/categories/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+        </div>
+
+        <!-- Buscador -->
+        <div th:replace="common/fragments :: search_form_and_message('/categories/page/1')" />
+
+        <!-- Responsive en M-L -->
+        <div class="full-details">
+            <table class="table table-bordered table-striped table-hover table-responsive-xl">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Category Image</th>
+                        <th th:replace="common/fragments :: column_link('/categories', 'name', 'Category Name', 'none')" />
+                        <th class="hideable-column">Alias</th>
+                        <th>Enabled</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="cat : ${listCategories}">
+                        <td th:text="${cat.id}"></td>
+                        <td>
+                            <!-- Llama al metodo getImagePath de Category entity -->
+                            <img class="img-fluid" th:src="@{${cat.imagePath}}" style="width: 100px;" />
+                        </td>
+                        <td th:text="${cat.name}"></td>
+                        <td class="hideable-column" th:text="${cat.alias}"></td>
+
+                        <!-- Habilitar/Deshabilitar la categoria -->
+                        <td>                            
+                            <div th:replace="common/fragments :: status(${cat.enabled}, 'category', '/categories/' + ${cat.id})" />
+                        </td>
+
+                        <!-- Para editar y eliminar -->
+                        <td>
+                            <div th:replace="common/fragments :: edit('category', '/categories/edit/' + ${cat.id})" />
+                            &nbsp;
+                            <div th:replace="common/fragments :: delete('category', ${cat.id}, '/categories/delete/' + ${cat.id}, ${!cat.hasChildren})" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Responsive en S -->
+        <div class="less-details">
+            <div class="row m-1" th:each="cat : ${listCategories}">
+                <div class="col-4">
+                    <img class="img-fluid" th:src="@{${cat.imagePath}}" style="width: 100px" />
+                </div>
+                <div class="col-8">
+                    <div>[[${cat.name}]]</div>
+                    <div class="mt-2">
+                        <!-- Habilitar/Deshabilitar la categoria -->
+                        <div th:replace="common/fragments :: status(${cat.enabled}, 'category', '/categories/' + ${cat.id})" />
+                        &nbsp;
+                        <div th:replace="common/fragments :: edit('category', '/categories/edit/' + ${cat.id})" />
+                        &nbsp;
+                        <div th:replace="common/fragments :: delete('category', ${cat.id}, '/categories/delete/' + ${cat.id}, ${!cat.hasChildren})" />
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+            </div>
+        </div>
+
+        <!-- Mensaje que se muestra si categories es null -->
+        <div class="text-center" th:if="${keyword != null}">
+            <span>Search result does not show categories in hierarchical form</span>
+            <div th:replace="common/fragments :: pagination('/categories', 'categories')" />
+        </div>
+
+        <th:block th:unless="${keyword != null}">
+            <!-- Para moverse entre paginas -->
+            <div th:replace="common/fragments :: pagination('/categories', 'top-level categories')" />
+        </th:block>
+        <!-- Termina condicional -->
+
+        <!-- Modal para confirmar eliminar categoria -->
+        <div th:replace="common/modal_fragments :: confirm_modal" />
+
+        <!-- Footer -->
+        <div th:replace="common/footer :: footer"></div>
+
     </div>
 
-    <div class="alert alert-success text-center" th:if="${message != null}">
-        <div th:text="${message}"></div>
-    </div>
+    <script th:src="@{/js/common_list.js}"></script>
+    <script type="text/javascript">
+        // JQuery para eliminar el usuario - se mueve funcion a archivo common
+        moduleURL = "[[@{/categories}]]"
 
-    <!-- Buscador -->
-    <div>
-        <form class="form-inline m-3" th:action="@{/categories/page/1}">
-            Filter:&nbsp;
-            <!-- keyword viene del controlador -->
-            <input class="form-control m-3" type="search" name="keyword" th:value="${keyword}" required />
-            &nbsp;&nbsp;
-
-            <button class="btn btn-primary" type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-
-            &nbsp;&nbsp;
-            <button class="btn btn-secondary" type="button" onclick="clearFilter()">
-                <i class="fas fa-eraser"></i>
-            </button>
-        </form>
-    </div>
-
-    <!-- Responsive en M-L -->
-    <div class="full-details">
-        <table class="table table-bordered table-striped table-hover table-responsive-xl">
-            <thead class="thead-dark">
-            <tr>
-                <th>ID</th>
-                <th>Category Image</th>
-                <th>Category Name</th>
-                <th>Alias</th>
-                <th>Enabled</th>
-                <th></th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="cat : ${listCategories}">
-                <td th:text="${cat.id}"></td>
-                <td>
-                    <!-- Llama al metodo getImagePath de Category entity -->
-                    <img class="img-fluid" th:src="@{${cat.imagePath}}" style="width: 100px;"/>
-                </td>
-                <td th:text="${cat.name}"></td>
-                <td th:text="${cat.alias}"></td>
-
-                <td>
-                    <a th:if="${cat.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
-                        th:href="@{'/categories/' + ${cat.id} + '/enabled/false'}" title="Disable this category"></a>
-                    <a th:if="${cat.enabled == false}" class="fas fa-circle fa-2x icon-dark" 
-                    th:href="@{'/categories/' + ${cat.id} + '/enabled/true'}"title="Enable this category"></a>
-                </td>
-
-                <td>
-                    <!-- Llamada al metodo get de CategoryController.editUser(...) -->
-                    <a class="fas fa-edit fa-2x icon-green" th:href="@{'/categories/edit/' + ${cat.id}}"
-                        title="Edit this category"></a>
-                    &nbsp;
-                    <!-- Llamada al metodo get de CategoryController.deleteUser(...) -->
-                    <a class="fas fa-trash fa-2x icon-dark link-delete"
-                        th:href="@{'/categories/delete/' + ${cat.id}}" th:userId="${cat.id}"
-                        title="Delete this category"></a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Footer -->
-    <div th:replace="common/footer :: footer"></div>
-
-</div>
-
-<script type="text/javascript">
-        // JQuery para eliminar el usuario
         $(document).ready(function () {
             $(".link-delete").on("click", function (e) {
                 e.preventDefault();
-                // alert($(this).attr("href"));
-                var link = $(this);
-                var userId = link.attr("userId");
-                $("#yesButton").attr("href", link.attr("href"));
-                $("#confirmText").text(
-                    "Are you sure you want to delete this user ID " + userId
-                );
-                $("#confirmModal").modal();
+                showDeleteConfirmModal($(this), 'category');
             });
         });
-
-        function clearFilter() {
-            window.location = "[[@{/users}]]"
-        }
     </script>
 </body>
 

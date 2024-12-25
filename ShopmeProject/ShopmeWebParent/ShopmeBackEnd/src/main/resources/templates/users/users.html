@@ -23,32 +23,9 @@
             <!-- Para exportar a PDF -->
             <a th:href="@{/users/export/pdf}" class="fas fa-file-pdf fa-2x icon-dark mr-2"></a>
         </div>
-
-        <div class="alert alert-success text-center" th:if="${message != null}">
-            <div th:text="${message}"></div>
-        </div>
-
+        
         <!-- Buscador -->
-        <div>
-            <form class="form-inline" th:action="@{/users/page/1}">
-                <input type="hidden" name="sortField" th:value="${sortField}">
-                <input type="hidden" name="sortDir" th:value="${sortDir}">
-
-                Filter:&nbsp;
-                <!-- keyword viene del controlador -->
-                <input class="form-control m-3" type="search" name="keyword" th:value="${keyword}" required />
-                &nbsp;&nbsp;
-
-                <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-
-                &nbsp;&nbsp;
-                <button class="btn btn-secondary" type="button" onclick="clearFilter()">
-                    <i class="fas fa-eraser"></i>
-                </button>
-            </form>
-        </div>
+        <div th:replace="common/fragments :: search_form_and_message('/users/page/1')" />
 
         <!-- Responsive en M-L -->
         <div class="full-details">
@@ -56,22 +33,22 @@
                 <thead class="thead-dark">
                     <tr>
                         <th class="hideable-column">
-                            <th class="hideable-column" th:replace="common/fragments :: column_link('id', 'User ID', 'tag')" />
+                            <th th:replace="common/fragments :: column_link('/users', 'id', 'User ID', 'tag')" />
                         </th>
 
                         <th>Photos</th>
 
                         <th class="hideable-column">
-                            <th th:replace="common/fragments :: column_link('email', 'Email', 'tag')" />
+                            <th th:replace="common/fragments :: column_link('/users', 'email', 'Email', 'tag')" />
                         </th>
 
-                        <th th:replace="common/fragments :: column_link('firstName', 'First Name', 'none')" />
+                        <th th:replace="common/fragments :: column_link('/users', 'firstName', 'First Name', 'none')" />
 
-                        <th th:replace="common/fragments :: column_link('lastName', 'Last Name', 'none')" />
+                        <th th:replace="common/fragments :: column_link('/users', 'lastName', 'Last Name', 'none')" />
 
                         <th>Roles</th>
 
-                        <th th:replace="common/fragments :: column_link('enabled', 'Enabled', 'none')" />
+                        <th th:replace="common/fragments :: column_link('/users', 'enabled', 'Enabled', 'none')" />
 
                         <th></th>
                     </tr>
@@ -92,25 +69,17 @@
                         <td th:text="${user.lastName}"></td>
                         <td th:text="${user.roles}"></td>
 
+                        <!-- Habilitar/Deshabilitar al usuario -->
                         <td>
-                            <!-- th:text="${user.enabled}" -->
-                            <!-- Se anade logica para cambiar el color -->
-                            <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
-                                th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user"></a>
-                            <a th:if="${user.enabled == false}" class="fas fa-circle fa-2x icon-dark"
-                                th:href="@{'/users/' + ${user.id} + '/enabled/true'}" title="Enable this user"></a>
+                            <div th:replace="common/fragments :: status(${user.enabled}, 'user', '/users/' + ${user.id})" />
                         </td>
-
                         <!-- Iconos y logica para editar y eliminar -->
                         <td>
                             <!-- Llamada al metodo get de UserController.editUser(...) -->
-                            <a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
-                                title="Edit this user"></a>
-                            &nbsp;
+                            <div th:replace="common/fragments :: edit('user', '/users/edit/' + ${user.id})" />
+                            &nbsp;&nbsp;
                             <!-- Llamada al metodo get de UserController.deleteUser(...) -->
-                            <a class="fas fa-trash fa-2x icon-dark link-delete"
-                                th:href="@{'/users/delete/' + ${user.id}}" th:userId="${user.id}"
-                                title="Delete this user"></a>
+                            <div th:replace="common/fragments :: delete('user', ${user.id}, '/users/delete/' + ${user.id}, true)" />
                         </td>
                     </tr>
                 </tbody>
@@ -129,19 +98,13 @@
                     <div></div>
                     <div>[[${user.roles}]]</div>
                     <div class="mt-2">
-                        <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
-                            th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user"></a>
-
-                        <a th:if="${user.enabled == false}" class="fas fa-circle fa-2x icon-dark"
-                            th:href="@{'/users/' + ${user.id} + '/enabled/true'}" title="Enable this user"></a>
+                        <!-- Habilitar/Deshabilitar al usuario -->
+                        <div th:replace="common/fragments :: status(${user.enabled}, 'user', '/users/' + ${user.id})" />
                         &nbsp;
                         <!-- Llamada al metodo get de UserController.editUser(...) -->
-                        <a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
-                            title="Edit this user"></a>
+                        <div th:replace="common/fragments :: edit('user', '/users/edit/' + ${user.id})" />
                         &nbsp;
-                        <!-- Llamada al metodo get de UserController.deleteUser(...) -->
-                        <a class="fas fa-trash fa-2x icon-dark link-delete" th:href="@{'/users/delete/' + ${user.id}}"
-                            th:userId="${user.id}" title="Delete this user"></a>
+                        <div th:replace="common/fragments :: delete('user', ${user.id}, '/users/delete/' + ${user.id}, true)" />
                     </div>
                 </div>
 
@@ -150,99 +113,29 @@
             </div>
         </div>
 
-        <!-- Div para mensajes sobre paginacion -->
-        <div class="text-center m-1" th:if="${totalItems > 0}">
-            <span>Showing users #[[${startCount}]] to #[[${endCount}]] of
-                [[${totalItems}]]</span>
-        </div>
+        <!-- Menu de paginacion -->
+        <div th:replace="common/fragments :: pagination('/users', 'users')" />
 
-        <!-- Si la lista de users es 0 -->
-        <div class="text-center m-1" th:unless="${totalItems > 0}">
-            <span>No users found</span>
-        </div>
-
-        <!-- Lista para paginacion -->
-        <div th:if="${totalPages > 1}">
-            <nav>
-                <ul class="pagination justify-content-center flex-wrap">
-                    <!-- Muestra la primera pagina, se desactiva el boton si la pagina es 1+ -->
-                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                        <a th:replace="common/fragments :: page_link(1, 'First')"></a>
-                    </li>
-
-                    <!-- Si no es la primera pagina, se desactiva este boton-->
-                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-                        <a th:replace="common/fragments :: page_link(${currentPage - 1}, 'Previous')"></a>
-                    </li>
-
-                    <!-- ForEach para mostrar la cantidad de paginas (cambia segun la cons USER_PER_PAGE - UserService) -->
-                    <!-- active solo mostrara la pagina activa -->
-                    <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
-                        th:each="i : ${#numbers.sequence(1, totalPages)}">
-                        <a th:replace="common/fragments :: page_link(${i}, ${i})"></a>
-                    </li>
-
-                    <!-- Se desactiva este boton si estoy en la ultima pagina -->
-                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                        <a th:replace="common/fragments :: page_link(${currentPage + 1}, 'Next')"></a>
-                    </li>
-
-                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-                        <a th:replace="common/fragments :: page_link(${totalPages}, 'Last')"></a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
-        <!-- Modal para mensaje de confirmacion al eliminar -->
-        <div class="modal fade text-center" id="confirmModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Delete Confirmation</h4>
-                        <button class="close" type="button" data-dismiss="modal">
-                            &times;
-                        </button>
-                    </div>
-
-                    <div class="modal-body">
-                        <span id="confirmText"></span>
-                    </div>
-
-                    <div class="modal-footer">
-                        <a class="btn btn-success" href="" id="yesButton">Yes</a>
-                        <button class="btn btn-danger" type="button" data-dismiss="modal">
-                            No
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Boton al eliminar -->
+        <div th:replace="common/modal_fragments :: confirm_modal" />
 
         <!-- Footer -->
         <div th:replace="common/footer :: footer"></div>
 
     </div>
 
+    <script th:src="@{/js/common_list.js}"></script>
     <script type="text/javascript">
-        // JQuery para eliminar el usuario
+
+        // Se hace refactor, la logica esta en common_list.js
+        moduleURL = "[[@{/users}]]"
+
         $(document).ready(function () {
             $(".link-delete").on("click", function (e) {
                 e.preventDefault();
-                // alert($(this).attr("href"));
-                var link = $(this);
-                var userId = link.attr("userId");
-                $("#yesButton").attr("href", link.attr("href"));
-                $("#confirmText").text(
-                    "Are you sure you want to delete this user ID " + userId
-                );
-                $("#confirmModal").modal();
+                showDeleteConfirmModal($(this), 'category');
             });
         });
-
-        function clearFilter() {
-            window.location = "[[@{/users}]]"
-        }
     </script>
 </body>
 

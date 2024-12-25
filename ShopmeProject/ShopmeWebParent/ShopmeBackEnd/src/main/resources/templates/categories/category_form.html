@@ -79,27 +79,9 @@
             </div>
 
         </form>
+
         <!-- Este es el modal que le indica al usuario que el email ya existe -->
-        <div class="modal fade text-center" id="modalDialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="modalTitle">Warning</h4>
-                        <button class="close" type="button" data-dismiss="modal">&times;</button>
-                    </div>
-
-                    <div class="modal-body">
-                        <span id="modalBody"></span>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button class="btn btn-danger" type="button" data-dismiss="modal">Close</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
+        <div th:replace="common/modal_fragments :: modal_dialog"></div>
 
         <!-- Footer -->
         <div th:replace="common/footer :: footer"></div>
@@ -120,9 +102,17 @@
             var params = {id: catId, name: catName, alias: catAlias, _csrf: csrfValue};
 
             $.post(url, params, function(response){
-                alert(response);
+                if(response == "OK"){
+                    form.submit();
+                } else if (response == "DuplicateName"){
+                    showWarningModal("There is another category having the same name " + catName);
+                } else if (response == "DuplicateAlias"){
+                    showWarningModal("There is another category having the same alias " + catAlias);
+                } else {
+                    showErrorModal("Unknown response from server");
+                }
             }).fail(function(){
-                alert('failed');
+                showErrorModal("Could not connect to the server");
             })
             
             return false;

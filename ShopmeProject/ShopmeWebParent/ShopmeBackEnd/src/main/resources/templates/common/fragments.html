@@ -1,22 +1,117 @@
 <body>
-    <th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
-        <a class="text-white" 
-            th:href="@{'/users/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' 
+    <!-- Para los nombres de las tablas, se reutiliza en cada una de ellas -->
+    <th th:fragment="column_link(moduleURL, fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+        <a class="text-white"
+            th:href="@{${moduleURL} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' 
                 + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
             [[${columnLabel}]]
         </a>
 
         <!-- Si se hace click en el campo id, se ordena de manera asc y cambia icono-->
-        <span th:if="${sortField == 'fieldName'}"
-            th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+        <span th:if="${sortField == fieldName}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
         </span>
     </th>
 
-    <a th:fragment="page_link(pageNum, label)" class="page-link"
-        th:href="@{'/users/page/' + ${pageNum} + '?sortField=' + ${sortField} 
+    <a th:fragment="page_link(moduleURL, pageNum, label)" class="page-link" th:href="@{${moduleURL} + '/page/' + ${pageNum} + '?sortField=' + ${sortField} 
             + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
         [[${label}]]
     </a>
 
+    <!-- Colores para habilitar/desabilitar a la entidad -->
+    <div th:fragment="status(enabled, entityName, entityURL)" th:remove="tag">
+        <a th:if="${enabled == true}" class="fas fa-check-circle fa-2x icon-green"
+            th:href="@{${entityURL} + '/enabled/false'}" title="'Disable this ' + ${entityName}"></a>
+        <a th:if="${enabled == false}" class="fas fa-circle fa-2x icon-dark" th:href="@{${entityURL} + '/enabled/true'}"
+            title="'Enable this '+ ${entityName}"></a>
+    </div>
+
+    <!-- Para editar -->
+    <div th:fragment="edit(entityName, editURL)" th:remove="tag">
+        <a class="fas fa-edit fa-2x icon-green" th:href="@{${editURL}}"
+            th:title="'Edit this ' + ${entityName}"></a>
+    </div>
+
+    <!-- Para eliminar, tiene variables que se pasan al common_list.js -->
+    <div th:fragment="delete(entityName, entityId, deleteURL, visible)" th:remove="tag">
+        <th:block th:if="${visible}">
+            <a class="fas fa-trash fa-2x icon-dark link-delete" 
+            th:href="@{${deleteURL}}"
+            th:entityId="${entityId}" 
+            th:title="'Delete this ' + ${entityName}"></a>
+        </th:block>
+    </div>
+
+    <!-- Paginacion -->
+    <div th:fragment="pagination(moduleURL, entityName)" th:remove="tag">
+        <!-- Div para mensajes sobre paginacion -->
+        <div class="text-center m-1" th:if="${totalItems > 0}">
+            <span>Showing [[${entityName}]] #[[${startCount}]] to #[[${endCount}]] of
+                [[${totalItems}]]</span>
+        </div>
+
+        <!-- Si la lista de users es 0 -->
+        <div class="text-center m-1" th:unless="${totalItems > 0}">
+            <span>No [[${entityName}]] found</span>
+        </div>
+
+        <!-- Lista para paginacion -->
+        <div th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination justify-content-center flex-wrap">
+                    <!-- Muestra la primera pagina, se desactiva el boton si la pagina es 1+ -->
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(${moduleURL}, 1, 'First')"></a>
+                    </li>
+
+                    <!-- Si no es la primera pagina, se desactiva este boton-->
+                    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(${moduleURL}, ${currentPage - 1}, 'Previous')"></a>
+                    </li>
+
+                    <!-- ForEach para mostrar la cantidad de paginas (cambia segun la cons USER_PER_PAGE - UserService) -->
+                    <!-- active solo mostrara la pagina activa -->
+                    <li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
+                        th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <a th:replace="common/fragments :: page_link(${moduleURL}, ${i}, ${i})"></a>
+                    </li>
+
+                    <!-- Se desactiva este boton si estoy en la ultima pagina -->
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(${moduleURL}, ${currentPage + 1}, 'Next')"></a>
+                    </li>
+
+                    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                        <a th:replace="common/fragments :: page_link(${moduleURL}, ${totalPages}, 'Last')"></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Buscador + mensaje despues de editar -->
+    <div th:fragment="search_form_and_message(moduleURL)">
+        <form class="form-inline" th:action="@{${moduleURL}}">
+            <input type="hidden" name="sortField" th:value="${sortField}">
+            <input type="hidden" name="sortDir" th:value="${sortDir}">
+
+            Filter:&nbsp;
+            <!-- keyword viene del controlador -->
+            <input class="form-control m-3" type="search" name="keyword" th:value="${keyword}" required />
+            &nbsp;&nbsp;
+
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+
+            &nbsp;&nbsp;
+            <button class="btn btn-secondary" type="button" onclick="clearFilter()">
+                <i class="fas fa-eraser"></i>
+            </button>
+        </form>
+
+        <div class="alert alert-success text-center" th:if="${message != null}">
+            <div th:text="${message}"></div>
+        </div>
+    </div>
 
 </body>

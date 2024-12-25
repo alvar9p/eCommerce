@@ -30,7 +30,7 @@ public class FileUploadUtil {
         }
     }
 
-    // Codigo para limpiar el directorio y delar la ultima imagen
+    // Codigo para limpiar el directorio y de la la ultima imagen
     public static void cleanDirectory(String directory){
         Path directoryPath = Paths.get(directory);
 
@@ -48,6 +48,15 @@ public class FileUploadUtil {
         }catch (IOException ex){
             LOGGER.error("Could not list directory: " + directoryPath);
             //System.out.println("Could not list directory: " + directoryPath);
+        }
+    }
+
+    public static void removeDir(String dir){
+        cleanDirectory(dir);
+        try{
+            Files.delete(Paths.get(dir));
+        }catch (IOException ex){
+            LOGGER.error("Could not remove directory: " + dir);
         }
     }
 }

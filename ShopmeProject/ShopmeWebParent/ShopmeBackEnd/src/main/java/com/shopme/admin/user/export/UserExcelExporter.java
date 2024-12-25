@@ -1,5 +1,6 @@
-package com.shopme.admin.utils;
+package com.shopme.admin.user.export;
 
+import com.shopme.admin.utils.AbstractExporterUtil;
 import com.shopme.common.entity.User;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.usermodel.*;
@@ -9,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class UserExcelExporterUtil extends AbstractExporter{
+public class UserExcelExporter extends AbstractExporterUtil {
 
     // Representa el libro de trabajo Excel
     private XSSFWorkbook workbook;
@@ -17,7 +18,7 @@ public class UserExcelExporterUtil extends AbstractExporter{
     private XSSFSheet sheet;
 
     // Se inicializa el libro
-    public UserExcelExporterUtil(){
+    public UserExcelExporter(){
         workbook = new XSSFWorkbook();
     }
 
@@ -60,7 +61,7 @@ public class UserExcelExporterUtil extends AbstractExporter{
     }
 
     public void export(List<User> listUsers, HttpServletResponse response) throws IOException {
-        super.setResponseHeader(response, "application/octet-stream", ".xlsx");
+        super.setResponseHeader(response, "application/octet-stream", ".xlsx", "users_");
 
         // Escribe la cabecera
         writeHeaderLine();
