@@ -1,15 +1,12 @@
 package com.shopme.admin.utils;
 
-import com.shopme.common.entity.User;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
-public class AbstractExporter {
+public class AbstractExporterUtil {
 
     // Se utiliza para crear el contentType del archivo a descargar
     public void setResponseHeader(HttpServletResponse response, String contentType,

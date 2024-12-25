@@ -1,6 +1,6 @@
-package com.shopme.admin.category.utils;
+package com.shopme.admin.category.export;
 
-import com.shopme.admin.utils.AbstractExporter;
+import com.shopme.admin.utils.AbstractExporterUtil;
 import com.shopme.common.entity.Category;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class CategoryCsvExporter extends AbstractExporter {
+public class CategoryCsvExporter extends AbstractExporterUtil {
 
     public void export(List<Category> listCategories, HttpServletResponse response) throws IOException{
 

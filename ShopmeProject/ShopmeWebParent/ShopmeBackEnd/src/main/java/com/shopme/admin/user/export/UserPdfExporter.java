@@ -1,11 +1,11 @@
-package com.shopme.admin.utils;
+package com.shopme.admin.user.export;
 
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
-import com.lowagie.text.pdf.PdfCell;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import com.shopme.admin.utils.AbstractExporterUtil;
 import com.shopme.common.entity.User;
 
 import javax.servlet.http.HttpServletResponse;
@@ -13,12 +13,12 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
-public class UserPdfExporterUtil extends AbstractExporter{
+public class UserPdfExporter extends AbstractExporterUtil {
 
     public void export(List<User> listUsers, HttpServletResponse response) throws IOException{
 
         // Configura la cabecera de la respuesta HTTP para un archivo PDF
-        super.setResponseHeader(response, "application/pdf", ".pdf");
+        super.setResponseHeader(response, "application/pdf", ".pdf", "users_");
 
         // Crea un nuevo documento PDF con tamano A4
         Document document = new Document(PageSize.A4);
