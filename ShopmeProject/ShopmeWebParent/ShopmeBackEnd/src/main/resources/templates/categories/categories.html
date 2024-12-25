@@ -32,14 +32,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Category Image</th>
-                        <th>
-                            <!-- reverseSortDir (para cambiar de asc a desc) se trabaja en el controlador -->
-                            <a class="text-white"
-                                th:href="@{'/categories/page/' + ${pageNum} + '?sortDir=' + ${reverseSortDir} +  ${keyword != null ? '&keyword=' + keyword : ''}}">Category
-                                Name</a>
-                            <span th:class="${reverseSortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
-                            </span>
-                        </th>
+                        <th th:replace="common/fragments :: column_link('/categories', 'name', 'Category Name', 'none')" />
                         <th class="hideable-column">Alias</th>
                         <th>Enabled</th>
                         <th></th>
@@ -56,12 +49,16 @@
                         <td th:text="${cat.name}"></td>
                         <td class="hideable-column" th:text="${cat.alias}"></td>
 
-                        <td>
-                            <div th:replace="common/fragments :: category_status" />
+                        <!-- Habilitar/Deshabilitar la categoria -->
+                        <td>                            
+                            <div th:replace="common/fragments :: status(${cat.enabled}, 'category', '/categories/' + ${cat.id})" />
                         </td>
 
+                        <!-- Para editar y eliminar -->
                         <td>
-                            <div th:replace="common/fragments :: category_actions" />
+                            <div th:replace="common/fragments :: edit('category', '/categories/edit/' + ${cat.id})" />
+                            &nbsp;
+                            <div th:replace="common/fragments :: delete('category', ${cat.id}, '/categories/delete/' + ${cat.id}, ${cat.hasChildren})" />
                         </td>
                     </tr>
                 </tbody>
@@ -77,9 +74,12 @@
                 <div class="col-8">
                     <div>[[${cat.name}]]</div>
                     <div class="mt-2">
-                        <div th:replace="common/fragments :: category_status" />
+                        <!-- Habilitar/Deshabilitar la categoria -->
+                        <div th:replace="common/fragments :: status(${cat.enabled}, 'category', '/categories/' + ${cat.id})" />
                         &nbsp;
-                        <div th:replace="common/fragments :: category_actions" />
+                        <div th:replace="common/fragments :: edit('category', '/categories/edit/' + ${cat.id})" />
+                        &nbsp;
+                        <div th:replace="common/fragments :: delete('category', ${cat.id}, '/categories/delete/' + ${cat.id}, ${cat.hasChildren})" />
                     </div>
                 </div>
                 <div>&nbsp;</div>

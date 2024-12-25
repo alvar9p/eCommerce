@@ -37,22 +37,22 @@
                 <thead class="thead-dark">
                     <tr>
                         <th class="hideable-column">
-                            <th class="hideable-column" th:replace="common/fragments :: column_link('id', 'User ID', 'tag')" />
+                            <th th:replace="common/fragments :: column_link('/users', 'id', 'User ID', 'tag')" />
                         </th>
 
                         <th>Photos</th>
 
                         <th class="hideable-column">
-                            <th th:replace="common/fragments :: column_link('email', 'Email', 'tag')" />
+                            <th th:replace="common/fragments :: column_link('/users', 'email', 'Email', 'tag')" />
                         </th>
 
-                        <th th:replace="common/fragments :: column_link('firstName', 'First Name', 'none')" />
+                        <th th:replace="common/fragments :: column_link('/users', 'firstName', 'First Name', 'none')" />
 
-                        <th th:replace="common/fragments :: column_link('lastName', 'Last Name', 'none')" />
+                        <th th:replace="common/fragments :: column_link('/users', 'lastName', 'Last Name', 'none')" />
 
                         <th>Roles</th>
 
-                        <th th:replace="common/fragments :: column_link('enabled', 'Enabled', 'none')" />
+                        <th th:replace="common/fragments :: column_link('/users', 'enabled', 'Enabled', 'none')" />
 
                         <th></th>
                     </tr>
@@ -73,25 +73,17 @@
                         <td th:text="${user.lastName}"></td>
                         <td th:text="${user.roles}"></td>
 
+                        <!-- Habilitar/Deshabilitar al usuario -->
                         <td>
-                            <!-- th:text="${user.enabled}" -->
-                            <!-- Se anade logica para cambiar el color -->
-                            <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
-                                th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user"></a>
-                            <a th:if="${user.enabled == false}" class="fas fa-circle fa-2x icon-dark"
-                                th:href="@{'/users/' + ${user.id} + '/enabled/true'}" title="Enable this user"></a>
+                            <div th:replace="common/fragments :: status(${user.enabled}, 'user', '/users/' + ${user.id})" />
                         </td>
-
                         <!-- Iconos y logica para editar y eliminar -->
                         <td>
                             <!-- Llamada al metodo get de UserController.editUser(...) -->
-                            <a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
-                                title="Edit this user"></a>
-                            &nbsp;
+                            <div th:replace="common/fragments :: edit('user', '/users/edit/' + ${user.id})" />
+                            &nbsp;&nbsp;
                             <!-- Llamada al metodo get de UserController.deleteUser(...) -->
-                            <a class="fas fa-trash fa-2x icon-dark link-delete"
-                                th:href="@{'/users/delete/' + ${user.id}}" th:entityId="${user.id}"
-                                title="Delete this user"></a>
+                            <div th:replace="common/fragments :: delete('user', ${user.id}, '/users/delete/' + ${user.id}, true)" />
                         </td>
                     </tr>
                 </tbody>
@@ -110,19 +102,13 @@
                     <div></div>
                     <div>[[${user.roles}]]</div>
                     <div class="mt-2">
-                        <a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
-                            th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user"></a>
-
-                        <a th:if="${user.enabled == false}" class="fas fa-circle fa-2x icon-dark"
-                            th:href="@{'/users/' + ${user.id} + '/enabled/true'}" title="Enable this user"></a>
+                        <!-- Habilitar/Deshabilitar al usuario -->
+                        <div th:replace="common/fragments :: status(${user.enabled}, 'user', '/users/' + ${user.id})" />
                         &nbsp;
                         <!-- Llamada al metodo get de UserController.editUser(...) -->
-                        <a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
-                            title="Edit this user"></a>
+                        <div th:replace="common/fragments :: edit('user', '/users/edit/' + ${user.id})" />
                         &nbsp;
-                        <!-- Llamada al metodo get de UserController.deleteUser(...) -->
-                        <a class="fas fa-trash fa-2x icon-dark link-delete" th:href="@{'/users/delete/' + ${user.id}}"
-                            th:userId="${user.id}" title="Delete this user"></a>
+                        <div th:replace="common/fragments :: delete('user', ${user.id}, '/users/delete/' + ${user.id}, true)" />
                     </div>
                 </div>
 
@@ -145,9 +131,9 @@
     <script th:src="@{/js/common_list.js}"></script>
     <script type="text/javascript">
 
-    // Se hace refactor, la logica esta en common_list.js
-    moduleURL = "[[@{/users}]]"
-        
+        // Se hace refactor, la logica esta en common_list.js
+        moduleURL = "[[@{/users}]]"
+
         $(document).ready(function () {
             $(".link-delete").on("click", function (e) {
                 e.preventDefault();

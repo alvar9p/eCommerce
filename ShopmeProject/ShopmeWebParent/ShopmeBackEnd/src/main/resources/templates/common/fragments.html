@@ -1,14 +1,14 @@
 <body>
-    <th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+    <!-- Para los nombres de las tablas, se reutiliza en cada una de ellas -->
+    <th th:fragment="column_link(moduleURL, fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
         <a class="text-white"
-            th:href="@{'/users/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' 
+            th:href="@{${moduleURL} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' 
                 + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
             [[${columnLabel}]]
         </a>
 
         <!-- Si se hace click en el campo id, se ordena de manera asc y cambia icono-->
-        <span th:if="${sortField == 'fieldName'}"
-            th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+        <span th:if="${sortField == fieldName}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
         </span>
     </th>
 
@@ -17,22 +17,27 @@
         [[${label}]]
     </a>
 
-    <!-- Para habilitar/desabilitar categoriias en categories.html -->
-    <div th:fragment="category_status" th:remove="tag">
-        <a th:if="${cat.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
-            th:href="@{'/categories/' + ${cat.id} + '/enabled/false'}" title="Disable this category"></a>
-        <a th:if="${cat.enabled == false}" class="fas fa-circle fa-2x icon-dark"
-            th:href="@{'/categories/' + ${cat.id} + '/enabled/true'}" title="Enable this category"></a>
+    <!-- Colores para habilitar/desabilitar a la entidad -->
+    <div th:fragment="status(enabled, entityName, entityURL)" th:remove="tag">
+        <a th:if="${enabled == true}" class="fas fa-check-circle fa-2x icon-green"
+            th:href="@{${entityURL} + '/enabled/false'}" title="'Disable this ' + ${entityName}"></a>
+        <a th:if="${enabled == false}" class="fas fa-circle fa-2x icon-dark" th:href="@{${entityURL} + '/enabled/true'}"
+            title="'Enable this '+ ${entityName}"></a>
     </div>
 
-    <!-- Para eliminar categories, tiene variables que se pasan al common_list.js -->
-    <div th:fragment="category_actions" th:remove="tag">
-        <a class="fas fa-edit fa-2x icon-green" th:href="@{'/categories/edit/' + ${cat.id}}"
-            title="Edit this category"></a>
-        &nbsp;
-        <th:block th:if="${cat.hasChildren == false}">
-            <a class="fas fa-trash fa-2x icon-dark link-delete" th:href="@{'/categories/delete/' + ${cat.id}}"
-                th:entityId="${cat.id}" title="Delete this category"></a>
+    <!-- Para editar -->
+    <div th:fragment="edit(entityName, editURL)" th:remove="tag">
+        <a class="fas fa-edit fa-2x icon-green" th:href="@{${editURL}}"
+            th:title="'Edit this ' + ${entityName}"></a>
+    </div>
+
+    <!-- Para eliminar, tiene variables que se pasan al common_list.js -->
+    <div th:fragment="delete(entityName, entityId, deleteURL, visible)" th:remove="tag">
+        <th:block th:if="${visible}">
+            <a class="fas fa-trash fa-2x icon-dark link-delete" 
+            th:href="@{${deleteURL}}"
+            th:entityId="${entityId}" 
+            th:title="'Delete this ' + ${entityName}"></a>
         </th:block>
     </div>
 
