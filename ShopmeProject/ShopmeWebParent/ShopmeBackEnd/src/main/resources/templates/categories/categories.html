@@ -40,7 +40,7 @@
                             <span th:class="${reverseSortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
                             </span>
                         </th>
-                        <th>Alias</th>
+                        <th class="hideable-column">Alias</th>
                         <th>Enabled</th>
                         <th></th>
                     </tr>
@@ -54,7 +54,7 @@
                             <img class="img-fluid" th:src="@{${cat.imagePath}}" style="width: 100px;" />
                         </td>
                         <td th:text="${cat.name}"></td>
-                        <td th:text="${cat.alias}"></td>
+                        <td class="hideable-column" th:text="${cat.alias}"></td>
 
                         <td>
                             <div th:replace="common/fragments :: category_status" />
@@ -66,6 +66,24 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Responsive en S -->
+        <div class="less-details">
+            <div class="row m-1" th:each="cat : ${listCategories}">
+                <div class="col-4">
+                    <img class="img-fluid" th:src="@{${cat.imagePath}}" style="width: 100px" />
+                </div>
+                <div class="col-8">
+                    <div>[[${cat.name}]]</div>
+                    <div class="mt-2">
+                        <div th:replace="common/fragments :: category_status" />
+                        &nbsp;
+                        <div th:replace="common/fragments :: category_actions" />
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+            </div>
         </div>
 
         <!-- Mensaje que se muestra si categories es null -->
