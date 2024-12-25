@@ -18,12 +18,8 @@
             <a th:href="@{/categories/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
         </div>
 
-        <div class="alert alert-success text-center" th:if="${message != null}">
-            <div th:text="${message}"></div>
-        </div>
-
         <!-- Buscador -->
-        <div th:replace="common/fragments :: search_form('/categories/page/1')" />
+        <div th:replace="common/fragments :: search_form_and_message('/categories/page/1')" />
 
         <!-- Responsive en M-L -->
         <div class="full-details">
@@ -58,7 +54,7 @@
                         <td>
                             <div th:replace="common/fragments :: edit('category', '/categories/edit/' + ${cat.id})" />
                             &nbsp;
-                            <div th:replace="common/fragments :: delete('category', ${cat.id}, '/categories/delete/' + ${cat.id}, ${cat.hasChildren})" />
+                            <div th:replace="common/fragments :: delete('category', ${cat.id}, '/categories/delete/' + ${cat.id}, ${!cat.hasChildren})" />
                         </td>
                     </tr>
                 </tbody>
@@ -79,7 +75,7 @@
                         &nbsp;
                         <div th:replace="common/fragments :: edit('category', '/categories/edit/' + ${cat.id})" />
                         &nbsp;
-                        <div th:replace="common/fragments :: delete('category', ${cat.id}, '/categories/delete/' + ${cat.id}, ${cat.hasChildren})" />
+                        <div th:replace="common/fragments :: delete('category', ${cat.id}, '/categories/delete/' + ${cat.id}, ${!cat.hasChildren})" />
                     </div>
                 </div>
                 <div>&nbsp;</div>

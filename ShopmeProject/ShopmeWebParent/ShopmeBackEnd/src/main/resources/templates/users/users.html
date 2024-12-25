@@ -23,13 +23,9 @@
             <!-- Para exportar a PDF -->
             <a th:href="@{/users/export/pdf}" class="fas fa-file-pdf fa-2x icon-dark mr-2"></a>
         </div>
-
-        <div class="alert alert-success text-center" th:if="${message != null}">
-            <div th:text="${message}"></div>
-        </div>
-
+        
         <!-- Buscador -->
-        <div th:replace="common/fragments :: search_form('/users/page/1')" />
+        <div th:replace="common/fragments :: search_form_and_message('/users/page/1')" />
 
         <!-- Responsive en M-L -->
         <div class="full-details">
