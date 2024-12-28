@@ -36,7 +36,7 @@
                     <tr th:each="brand : ${listBrands}">
                         <td class="hideable-column" th:text="${brand.id}"></td>
                         <td>
-                            <img class="img-fluid" th:scr="@{${brand.logoPath}}" style="width: 100px;" />
+                            <img class="img-fluid" th:src="@{${brand.logoPath}}" style="width: 100px;" />
                         </td>
                         <td th:text="${brand.name}"></td>
                         <td>
