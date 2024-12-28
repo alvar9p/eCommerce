@@ -35,7 +35,9 @@
                 <tbody>
                     <tr th:each="brand : ${listBrands}">
                         <td th:text="${brand.id}"></td>
-                        <td></td>
+                        <td>
+                            <img class="img-fluid" th:scr="@{${brand.logoPath}}" style="width: 100px;" />
+                        </td>
                         <td th:text="${brand.name}"></td>
                         <td>
                             <th:block th:each="cat : ${brand.categories}">

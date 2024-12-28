@@ -36,7 +36,7 @@
                         <input type="hidden" th:field="*{logo}" />
                         <!-- Agregar el nombre image para procesarlo en el backend -->
                         <input class="mb-2" type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg"
-                            required />
+                            th:required="${brand.id == null}" />
 
                         <div class="mt-2">
                             <!-- logoPath viene del Brand entity-->
@@ -95,9 +95,10 @@
             dropdownCategories.change(function () {
                 // Para que no repita la seleccion previa
                 divChosenCategories.empty();
-
                 showChosenCategories();
             });
+
+            showChosenCategories();
         });
 
         function showChosenCategories() {
