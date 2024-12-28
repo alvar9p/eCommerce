@@ -1,4 +1,4 @@
-package com.shopme.admin.brand;
+package com.shopme.admin.brand.repository;
 
 import com.shopme.common.entity.Brand;
 import org.springframework.data.repository.PagingAndSortingRepository;

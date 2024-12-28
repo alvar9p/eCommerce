@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 7 dias * 24 horas * 60 minutos (validity)
         httpSecurity.authorizeRequests()
                 .antMatchers("/users/**").hasAuthority("Admin")
-                .antMatchers("/categories/**").hasAnyAuthority("Admin", "Editor")
+                .antMatchers("/categories/**", "/brands/**").hasAnyAuthority("Admin", "Editor")
                 .anyRequest().authenticated()
                 .and()
                     .formLogin()

@@ -1,4 +1,5 @@
 package com.shopme.admin.brand;
+import com.shopme.admin.brand.repository.BrandRepository;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
 import org.junit.jupiter.api.Test;
