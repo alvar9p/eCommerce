@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/head :: head('Brands - Shopme Admin')" />
+
+<body>
+    <div class="container-fluid">
+
+        <!-- Navbar -->
+        <div th:replace="common/navbar :: navbar"></div>
+
+        <div>
+            <h2>Manage Brands</h2>
+            <!-- Llama a BrandController -->
+            <a th:href="@{/brands/new}" class="fas fa-user-plus fa-2x icon-dark mr-2"></a>
+            <a th:href="@{/brands/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+        </div>
+
+        <!-- Buscador -->
+        <div th:replace="common/fragments :: search_form_and_message('/brands/page/1')" />
+
+        <!-- Responsive en M-L -->
+        <div class="full-details">
+            <table class="table table-bordered table-striped table-hover table-responsive-xl">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="hideable-column">Brand ID</th>
+                        <th>Logo</th>
+                        <th th:replace="common/fragments :: column_link('/brands', 'name', 'Brand Name', 'none')" />
+                        <th>Categories</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="brand : ${listBrands}">
+                        <td class="hideable-column" th:text="${brand.id}"></td>
+                        <td>
+                            <img class="img-fluid" th:src="@{${brand.logoPath}}" style="width: 100px;" />
+                        </td>
+                        <td th:text="${brand.name}"></td>
+                        <td>
+                            <th:block th:each="cat : ${brand.categories}">
+                                <span class="badge badge-secondary" th:text="${cat.name}"></span>
+                            </th:block>
+                        </td>
+
+                        <!-- Para editar y eliminar -->
+                        <td>
+                            <div th:replace="common/fragments :: edit('brand', '/brands/edit/' + ${brand.id})" />
+                            &nbsp;
+                            <div
+                                th:replace="common/fragments :: delete('brand', ${brand.id}, '/brands/delete/' + ${brand.id}, true)" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Responsive en S -->
+        <div class="less-details">
+            <div class="row m-1" th:each="brand : ${listBrands}">
+                <div class="col-6">
+                    <img class="img-fluid" th:src="@{${brand.logoPath}}" style="width: 100px" />
+                </div>
+                <div class="col-6">
+                    <div>[[${brand.name}]]</div>
+                    <div class="mt-2">
+                        <div th:replace="common/fragments :: edit('brand', '/brands/edit/' + ${brand.id})" />
+                        &nbsp;
+                        <div
+                            th:replace="common/fragments :: delete('brand', ${brand.id}, '/brands/delete/' + ${brand.id}, true)" />
+                    </div>
+                </div>
+                <div>&nbsp;</div>
+            </div>
+        </div>
+
+        <div th:replace="common/fragments :: pagination('/brands', 'brands')" />
+
+        <!-- Modal para confirmar  -->
+        <div th:replace="common/modal_fragments :: confirm_modal" />
+
+        <!-- Footer -->
+        <div th:replace="common/footer :: footer"></div>
+
+    </div>
+
+    <script th:src="@{/js/common_list.js}"></script>
+    <script type="text/javascript">
+        // JQuery para eliminar el usuario - se mueve funcion a archivo common
+        moduleURL = "[[@{/brands}]]"
+
+        $(document).ready(function () {
+            $(".link-delete").on("click", function (e) {
+                e.preventDefault();
+                showDeleteConfirmModal($(this), 'brand');
+            });
+        });
+    </script>
+</body>
+
+</html>
