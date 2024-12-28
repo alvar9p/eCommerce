@@ -113,25 +113,20 @@
             });
         }
 
-
-
-
         function checkUnique(form) {
-            var catId = $("#id").val();
-            var catName = $("#name").val();
-            var catAlias = $("#alias").val();
+            var brandId = $("#id").val();
+            var brandName = $("#name").val();
             var csrfValue = $("input[name='_csrf']").val();
-            var url = "[[@{/category/check_unique}]]";
+            var url = "[[@{/brands/check_unique}]]";
+
             // Deben hacer match con los parametros que recibe el controlador
-            var params = { id: catId, name: catName, alias: catAlias, _csrf: csrfValue };
+            var params = { id: brandId, name: brandName, _csrf: csrfValue };
 
             $.post(url, params, function (response) {
                 if (response == "OK") {
                     form.submit();
-                } else if (response == "DuplicateName") {
-                    showWarningModal("There is another category having the same name " + catName);
-                } else if (response == "DuplicateAlias") {
-                    showWarningModal("There is another category having the same alias " + catAlias);
+                } else if (response == "Duplicate") {
+                    showWarningModal("There is another brand having the same name " + brandName);
                 } else {
                     showErrorModal("Unknown response from server");
                 }
