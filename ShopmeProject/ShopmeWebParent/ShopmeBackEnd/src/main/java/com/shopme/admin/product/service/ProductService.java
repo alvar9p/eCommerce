@@ -1,14 +1,17 @@
 package com.shopme.admin.product.service;
 
+import com.shopme.admin.product.exception.ProductNotFoundException;
 import com.shopme.admin.product.repository.ProductRepository;
 import com.shopme.common.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional
 public class ProductService {
 
     @Autowired
@@ -44,5 +47,17 @@ public class ProductService {
             }
         }
         return "OK";
+    }
+
+    public void updateProductEnabledStatus(Integer id, boolean enabled){
+        productRepository.updateEnabledStatus(id, enabled);
+    }
+
+    public void delete(Integer id) throws ProductNotFoundException {
+        Long countById = productRepository.countById(id);
+        if (countById == null || countById == 0){
+            throw new ProductNotFoundException("Could not find any product with ID " + id);
+        }
+        productRepository.deleteById(id);
     }
 }
