@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/head :: head(${pageTitle})" />
+
+<body>
+    <div class="container-fluid">
+
+        <div th:replace="common/navbar :: navbar"></div>
+
+        <div>
+            <!-- Viene de ProductController -->
+            <h2>Manage Products | [[${pageTitle}]]</h2>
+        </div>
+
+        <form th:action="@{/products/save}" method="post" th:object="${product}">
+            <input type="hidden" th:field="*{id}" />
+            <div>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#overview" role="tab">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#description" role="tab">Description</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#images" role="tab">Images</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#details" role="tab">Details</a>
+                    </li>
+                </ul>
+
+                <!-- Son th fragments -->
+                <div class="tab-content">
+                    <div class="tab-pane active p-3" id="overview" role="tabpanel">
+                        <div th:replace="products/product_overview :: content"></div>
+                    </div>
+                    <div class="tab-pane" id="description" role="tabpanel">Description</div>
+                    <div class="tab-pane" id="images" role="tabpanel">Images</div>
+                    <div class="tab-pane" id="details" role="tabpanel">Details</div>
+                </div>
+            </div>
+
+            <!-- Botones para Guardar o cancelar el formulario -->
+            <div class="text-center">
+                <input class="btn btn-primary m-3" type="submit" value="Save" />
+                <!-- El boton de cancelar llama a una funcion de JQuery -->
+                <input id="buttonCancel" class="btn btn-secondary" type="button" value="Cancel" />
+            </div>
+
+        </form>
+
+        <div th:replace="common/modal_fragments :: modal_dialog"></div>
+        <div th:replace="common/footer :: footer"></div>
+
+    </div>
+
+    <script type="text/javascript">
+        // Para utilizar la función de common_form
+        moduleURL = "[[@{/products}]]";
+        brandModuleURL = "[[@{/brands}]]";
+        dropdownBrands = $("#brand");
+        dropdownCategories = $("#category");
+    
+        $(document).ready(function(){
+            dropdownBrands.change(function(){
+                dropdownCategories.empty();
+                getCategories();            
+            })
+            getCategories();  
+        });
+
+        function getCategories(){
+            brandId = dropdownBrands.val();
+            url = brandModuleURL + "/" + brandId + "/categories";
+
+            $.get(url, function(responseJson){
+                $.each(responseJson, function(index, category){
+                    $("<option>").val(category.id).text(category.name).appendTo(dropdownCategories);
+                })
+            });
+            
+        }
+
+    </script>
+    <script th:src="@{/js/common_form.js}"></script>
+</body>
+
+
+</html>
