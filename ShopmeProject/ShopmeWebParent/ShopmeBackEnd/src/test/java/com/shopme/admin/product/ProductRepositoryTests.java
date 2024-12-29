@@ -1,6 +1,6 @@
 package com.shopme.admin.product;
 
-import com.shopme.admin.category.repository.CategoryRepository;
+import com.shopme.admin.product.repository.ProductRepository;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
 import com.shopme.common.entity.Product;
@@ -12,9 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
