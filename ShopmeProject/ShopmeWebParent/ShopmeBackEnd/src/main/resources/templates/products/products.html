@@ -37,7 +37,9 @@
                 <tbody>
                     <tr th:each="product : ${listProducts}">
                         <td th:text="${product.id}"></td>
-                        <td></td>
+                        <td>
+                            <img class="img-fluid" th:src="@{${product.mainImagePath}}" style="width: 120px;" />
+                        </td>
                         <td th:text="${product.name}"></td>
                         <td th:text="${product.brand.name}"></td> <!-- Va al Brand entity y trae el name -->
                         <td>                            

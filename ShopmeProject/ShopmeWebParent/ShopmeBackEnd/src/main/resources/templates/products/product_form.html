@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
     <head th:replace="common/head :: head(${pageTitle}, 'tag')" />
     <link rel="stylesheet" th:href="@{/richtext/richtext.min.css}" />
     <script th:src="@{/richtext/jquery.richtext.js}"></script>
@@ -18,7 +19,8 @@
             <h2>Manage Products | [[${pageTitle}]]</h2>
         </div>
 
-        <form th:action="@{/products/save}" method="post" th:object="${product}" onsubmit="return checkUnique(this)">
+        <form th:action="@{/products/save}" method="post" th:object="${product}" onsubmit="return checkUnique(this)"
+                enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}" />
             <div>
                 <!-- Nav tabs -->
@@ -49,7 +51,7 @@
                         <div th:replace="products/product_description :: content"></div>
                     </div>
                     <div class="tab-pane" id="images" role="tabpanel">
-                        Images
+                        <div th:replace="products/product_images :: content"></div>
                     </div>
                     <div class="tab-pane" id="details" role="tabpanel">
                         Details
@@ -75,54 +77,57 @@
     </div>
 
     <script type="text/javascript">
+        // Parametrizado, se utiliza en common_form.js
+        MAX_FILE_SIZE = 502400; // 500KB
+
         moduleURL = "[[@{/products}]]";
         brandModuleURL = "[[@{/brands}]]";
         dropdownBrands = $("#brand");
         dropdownCategories = $("#category");
-    
-        $(document).ready(function(){
+
+        $(document).ready(function () {
             $("#shortDescription").richText();
             $("#fullDescription").richText();
 
-            dropdownBrands.change(function(){
+            dropdownBrands.change(function () {
                 dropdownCategories.empty();
-                getCategories();            
+                getCategories();
             })
-            getCategories();  
+            getCategories();
         });
 
-        function getCategories(){
+        function getCategories() {
             brandId = dropdownBrands.val();
             url = brandModuleURL + "/" + brandId + "/categories";
 
-            $.get(url, function(responseJson){
-                $.each(responseJson, function(index, category){
+            $.get(url, function (responseJson) {
+                $.each(responseJson, function (index, category) {
                     $("<option>").val(category.id).text(category.name).appendTo(dropdownCategories);
                 })
             });
-            
+
         }
 
-        function checkUnique(form){
+        function checkUnique(form) {
             var productId = $("#id").val();
             var productName = $("#name").val();
             var csrfValue = $("input[name='_csrf']").val();
             var url = "[[@{/products/check_unique}]]";
             // Deben hacer match con los parametros que recibe el controlador
-            var params = {id: productId, name: productName, _csrf: csrfValue};
+            var params = { id: productId, name: productName, _csrf: csrfValue };
 
-            $.post(url, params, function(response){
-                if(response == "OK"){
+            $.post(url, params, function (response) {
+                if (response == "OK") {
                     form.submit();
-                } else if (response == "Duplicate"){
+                } else if (response == "Duplicate") {
                     showWarningModal("There is another product having the same name " + productName);
                 } else {
                     showErrorModal("Unknown response from server");
                 }
-            }).fail(function(){
+            }).fail(function () {
                 showErrorModal("Could not connect to the server");
             })
-            
+
             return false;
         }
 

@@ -1,0 +1,21 @@
+<body>
+    <div th:fragment="content" th:remove="tag">
+        <div class="row">
+            <div class="col border m-3 p-2">
+                <div>
+                    <label>Main Image:</label>
+                </div>
+
+                <div class="m-2">
+                    <!-- thumbnail, porque se utiliza el common_form.js que llama a este archivo (id) -->
+                    <!-- logica de mainImagePath esta en la entity Product -->
+                    <img class="img-fluid" id="thumbnail" alt="Main image preview" th:src="@{${product.mainImagePath}}" />
+                </div>
+
+                <div class="m-2">
+                    <input type="file" id="fileImage" name="fileImage" required accept="image*png, image/jpeg"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
