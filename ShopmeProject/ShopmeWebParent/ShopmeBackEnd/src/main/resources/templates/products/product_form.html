@@ -80,9 +80,11 @@
         // Parametrizado, se utiliza en common_form.js
         MAX_FILE_SIZE = 502400; // 500KB
 
+        // Se utilizan en el codigo de JS, pero se declaran aqui al ser codigo de Thymeleaf
         moduleURL = "[[@{/products}]]";
         brandModuleURL = "[[@{/brands}]]";
         defaultImageThumbnailSrc = "[[@{/images/image-thumbnail.png}]]";
+        checkUniqueurl = "[[@{/products/check_unique}]]";
 
     </script>
     <script th:src="@{/js/product_form.js}"></script>

@@ -54,21 +54,64 @@ public class ProductController {
 
     @PostMapping("/products/save")
     public String saveProduct(Product product,
-                              @RequestParam("fileImage") MultipartFile multipartFile,
+                              @RequestParam("fileImage") MultipartFile mainImageMultipart,
+                              @RequestParam("extraImage") MultipartFile[] extraImageMultiparts,
                               RedirectAttributes redirectAttributes) throws IOException {
-        if (!multipartFile.isEmpty()) {
-            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-            product.setMainImage(fileName);
-            Product savedProduct = productService.save(product);
-            String uploadDir = "../product-images/" + savedProduct.getId();
-            FileUploadUtil.cleanDirectory(uploadDir);
-            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-        } else {
-            productService.save(product);
-        }
+
+        // Primero se setean las imagenes
+        setMainImageName(mainImageMultipart, product);
+        setExtraImageNames(extraImageMultiparts, product);
+
+        // Luego se persisten en la DB
+        Product savedProduct = productService.save(product);
+
+        // Se guardan
+        saveUploadImages(mainImageMultipart, extraImageMultiparts, savedProduct);
 
         redirectAttributes.addFlashAttribute("message", "The product has been saved successfully.");
         return "redirect:/products";
+    }
+
+    private void saveUploadImages(MultipartFile mainImageMultipart,
+                                  MultipartFile[] extraImageMultiparts,
+                                  Product savedProduct) throws IOException {
+
+        if (!mainImageMultipart.isEmpty()) {
+            String fileName = StringUtils.cleanPath(mainImageMultipart.getOriginalFilename());
+            String uploadDir = "../product-images/" + savedProduct.getId();
+            FileUploadUtil.cleanDirectory(uploadDir);
+            FileUploadUtil.saveFile(uploadDir, fileName, mainImageMultipart);
+        }
+
+        if(extraImageMultiparts.length > 0){
+            String uploadDir = "../product-images/" + savedProduct.getId() + "/extras";
+            for (MultipartFile multipartFile : extraImageMultiparts) {
+                if (multipartFile.isEmpty()) continue;
+
+                String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+                FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+            }
+        }
+    }
+
+
+
+    public void setMainImageName(MultipartFile mainImageMultipart, Product product){
+        if (!mainImageMultipart.isEmpty()) {
+            String fileName = StringUtils.cleanPath(mainImageMultipart.getOriginalFilename());
+            product.setMainImage(fileName);
+        }
+    }
+
+    public void setExtraImageNames(MultipartFile[] extraImageMultiparts, Product product){
+        if(extraImageMultiparts.length > 0){
+            for (MultipartFile multipartFile : extraImageMultiparts){
+                if (!multipartFile.isEmpty()){
+                    String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+                    product.addExtraImage(fileName);
+                }
+            }
+        }
     }
 
     @GetMapping("/products/{id}/enabled/{status}")
@@ -86,6 +129,11 @@ public class ProductController {
     public String deleteProduct(@PathVariable(name = "id") Integer id, Model model, RedirectAttributes redirectAttributes){
         try {
             productService.delete(id);
+            String productExtraImagesDir = "../product-images/" + id + "/extras";
+            String producImagesDir = "../product-images/" + id;
+            FileUploadUtil.removeDir(productExtraImagesDir);
+            FileUploadUtil.removeDir(producImagesDir);
+
             redirectAttributes.addFlashAttribute("message", "The product ID " + id + " has been deleted successfully");
         }catch (ProductNotFoundException ex){
             redirectAttributes.addFlashAttribute("message", ex.getMessage());

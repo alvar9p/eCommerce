@@ -79,11 +79,12 @@ function checkUnique(form) {
     var productId = $("#id").val();
     var productName = $("#name").val();
     var csrfValue = $("input[name='_csrf']").val();
-    var url = "[[@{/products/check_unique}]]";
+
     // Deben hacer match con los parametros que recibe el controlador
     var params = { id: productId, name: productName, _csrf: csrfValue };
 
-    $.post(url, params, function (response) {
+    // checkUniqueurl viene del product_form
+    $.post(checkUniqueurl, params, function (response) {
         if (response == "OK") {
             form.submit();
         } else if (response == "Duplicate") {
