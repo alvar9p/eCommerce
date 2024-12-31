@@ -1,19 +1,27 @@
 <body>
     <div th:fragment="content" th:remove="tag">
-        <div class="row">
+        <div class="row" id="divProductImages">
             <div class="col border m-3 p-2">
-                <div>
-                    <label>Main Image:</label>
-                </div>
-
+                <div><label>Main Image:</label></div>
                 <div class="m-2">
                     <!-- thumbnail, porque se utiliza el common_form.js que llama a este archivo (id) -->
                     <!-- logica de mainImagePath esta en la entity Product -->
                     <img class="img-fluid" id="thumbnail" alt="Main image preview" th:src="@{${product.mainImagePath}}" />
                 </div>
-
                 <div class="m-2">
-                    <input type="file" id="fileImage" name="fileImage" required accept="image*png, image/jpeg"/>
+                    <input type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg" required/>
+                </div>
+            </div>
+
+            <div class="col border m-3 p-2" id="divExtraImage0">
+                <div id="extraImageHeader0"><label>Extra Image #1:</label></div>
+                <div class="m-2">
+                    <!-- thumbnail, porque se utiliza el common_form.js que llama a este archivo (id) -->
+                    <!-- logica de mainImagePath esta en la entity Product -->
+                    <img class="img-fluid" id="extraThumbnail0" alt="Extra image #1 preview" th:src="@{/images/image-thumbnail.png}" />
+                </div>
+                <div class="m-2">
+                    <input type="file" name="extraImage" accept="image/png, image/jpeg"/>
                 </div>
             </div>
         </div>
