@@ -10,6 +10,12 @@ $(document).ready(function () {
             showExtraImageThumbnail(this, index);
         });
     });
+
+    $("a[name='linkRemoveExtraImage']").each(function(index) {
+        $(this).click(function(){
+            removeExtraImage(index);
+        });
+    });
 });
 
 function showExtraImageThumbnail(fileInput, index) {

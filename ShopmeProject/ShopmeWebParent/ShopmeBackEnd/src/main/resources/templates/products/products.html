@@ -42,6 +42,7 @@
                         </td>
                         <td th:text="${product.name}"></td>
                         <td th:text="${product.brand.name}"></td> <!-- Va al Brand entity y trae el name -->
+                        <td th:text="${product.brand.categories}"></td>
                         <td>                            
                             <div th:replace="common/fragments :: status(${product.enabled}, 'product', '/products/' + ${product.id})" />
                         </td>

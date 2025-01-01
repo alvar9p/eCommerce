@@ -22,6 +22,7 @@
         <form th:action="@{/products/save}" method="post" th:object="${product}" onsubmit="return checkUnique(this)"
                 enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}" />
+            <input th:if="${product.category != null}" type="hidden" id="categoryId" th:value="${product.category.id}" />
             <div>
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">

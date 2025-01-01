@@ -11,9 +11,20 @@ $(document).ready(function () {
         getCategories();
     })
 
-    getCategories();
+    getCategoriesForNewForm();
 
 });
+
+function getCategoriesForNewForm(){
+    catIdField = $("#categoryId"); // Para ver si es en new o edit mode
+    editMode = false;
+
+    if(catIdField.length){
+        editMode = true;
+    }
+
+    if(!editMode) getCategories();
+}
 
 
 function getCategories() {
