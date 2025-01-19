@@ -3,7 +3,7 @@
 
 <!-- Se parametriza: Viene de UserControler.newUser(...) -->
 
-<head th:replace="common/head :: head(${pageTitle})" />
+<head th:replace="common/head :: head(${pageTitle}, 'none')" />
 
 <body>
 
@@ -122,6 +122,9 @@
     </div>
 
     <script type="text/javascript">
+        // Parametrizado, se utiliza en common_form.js
+        MAX_FILE_SIZE = 102400; // 100KB 
+
         // Para utilzar la function de common_form
         moduleURL = "[[@{/}]]";
 

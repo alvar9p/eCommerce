@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <head th:replace="common/head :: head(${pageTitle}, 'tag')" />
+    <link rel="stylesheet" th:href="@{/richtext/richtext.min.css}" />
+    <script th:src="@{/richtext/jquery.richtext.js}"></script>
+</head>
+
+
+<body>
+    <div class="container-fluid">
+
+        <div th:replace="common/navbar :: navbar"></div>
+
+        <div>
+            <!-- Viene de ProductController -->
+            <h2>Manage Products | [[${pageTitle}]]</h2>
+        </div>
+
+        <form th:action="@{/products/save}" method="post" th:object="${product}" onsubmit="return checkUnique(this)"
+                enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}" />
+            <input th:if="${product.category != null}" type="hidden" id="categoryId" th:value="${product.category.id}" />
+            <div>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#overview" role="tab">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#description" role="tab">Description</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#images" role="tab">Images</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#details" role="tab">Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#shipping" role="tab">Shipping</a>
+                    </li>
+                </ul>
+
+                <!-- Son th fragments -->
+                <div class="tab-content">
+                    <div class="tab-pane active p-3" id="overview" role="tabpanel">
+                        <div th:replace="products/product_overview :: content"></div>
+                    </div>
+                    <div class="tab-pane" id="description" role="tabpanel">
+                        <div th:replace="products/product_description :: content"></div>
+                    </div>
+                    <div class="tab-pane" id="images" role="tabpanel">
+                        <div th:replace="products/product_images :: content"></div>
+                    </div>
+                    <div class="tab-pane p-3" id="details" role="tabpanel">
+                        <div th:replace="products/product_details :: content"></div>
+                        <div>
+                            <input class="btn btn-secondary" type="button" value="Add Mode Detail" onclick="addNextDetailSection()" />
+                        </div>
+                    </div>
+                    <div class="tab-pane p-3" id="shipping" role="tabpanel">
+                        <div th:replace="products/product_shipping :: content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones para Guardar o cancelar el formulario -->
+            <div class="text-center">
+                <input class="btn btn-primary m-3" type="submit" value="Save" />
+                <!-- El boton de cancelar llama a una funcion de JQuery -->
+                <input id="buttonCancel" class="btn btn-secondary" type="button" value="Cancel" />
+            </div>
+
+        </form>
+
+        <div th:replace="common/modal_fragments :: modal_dialog"></div>
+        <div th:replace="common/footer :: footer"></div>
+
+    </div>
+
+    <script type="text/javascript">
+        // Parametrizado, se utiliza en common_form.js
+        MAX_FILE_SIZE = 502400; // 500KB
+
+        // Se utilizan en el codigo de JS, pero se declaran aqui al ser codigo de Thymeleaf
+        moduleURL = "[[@{/products}]]";
+        brandModuleURL = "[[@{/brands}]]";
+        defaultImageThumbnailSrc = "[[@{/images/image-thumbnail.png}]]";
+        checkUniqueurl = "[[@{/products/check_unique}]]";
+
+    </script>
+    <script th:src="@{/js/common_form.js}"></script>
+    <script th:src="@{/js/product_form_overview.js}"></script>
+    <script th:src="@{/js/product_form_images.js}"></script>
+    <script th:src="@{/js/product_form_details.js}"></script>
+</body>
+
+
+</html>

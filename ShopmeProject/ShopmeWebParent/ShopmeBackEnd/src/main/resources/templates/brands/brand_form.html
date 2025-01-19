@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="common/head :: head(${pageTitle})" />
+<head th:replace="common/head :: head(${pageTitle}, 'none')" />
 
 <body>
     <div class="container-fluid">
@@ -84,6 +84,9 @@
     </div>
 
     <script type="text/javascript">
+        // Parametrizado, se utiliza en common_form.js
+        MAX_FILE_SIZE = 102400; // 100KB 
+
         // Para utilizar la función de common_form
         moduleURL = "[[@{/brands}]]";
 

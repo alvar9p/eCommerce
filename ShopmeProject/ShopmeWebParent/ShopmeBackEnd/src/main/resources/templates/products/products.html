@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/head :: head('Products - Shopme Admin', 'none')" />
+
+<body>
+    <div class="container-fluid">
+
+        <!-- Navbar -->
+        <div th:replace="common/navbar :: navbar"></div>
+
+        <div>
+            <h2>Manage Products</h2>
+            <!-- Llama a ProductController -->
+            <a th:href="@{/products/new}" class="fas fa-user-plus fa-2x icon-dark mr-2"></a>
+            <a th:href="@{/products/export/csv}" class="fas fa-file-csv fa-2x icon-dark mr-2"></a>
+        </div>
+
+        <!-- Buscador -->
+        <div th:replace="common/fragments :: search_form_and_message('/products/page/1')" />
+
+        <!-- Responsive en M-L -->
+        <div class="full-details">
+            <table class="table table-bordered table-striped table-hover table-responsive-xl">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Main Image</th>
+                        <th>Product Name</th>
+                        <th>Brand</th>
+                        <th>Category</th>
+                        <th>Enabled</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="product : ${listProducts}">
+                        <td th:text="${product.id}"></td>
+                        <td>
+                            <img class="img-fluid" th:src="@{${product.mainImagePath}}" style="width: 120px;" />
+                        </td>
+                        <td th:text="${product.name}"></td>
+                        <td th:text="${product.brand.name}"></td> <!-- Va al Brand entity y trae el name -->
+                        <td th:text="${product.brand.categories}"></td>
+                        <td>                            
+                            <div th:replace="common/fragments :: status(${product.enabled}, 'product', '/products/' + ${product.id})" />
+                        </td>
+
+                        <!-- Para editar y eliminar -->
+                        <td>
+                            <a class="fas fa-file-alt fa-2x icon-green" 
+                                th:href="@{'/products/detail/' + ${product.id}}" title="View details of this product"></a>
+                            &nbsp;
+                            <div th:replace="common/fragments :: edit('product', '/products/edit/' + ${product.id})" />
+                            &nbsp;
+                            <div
+                                th:replace="common/fragments :: delete('product', ${product.id}, '/products/delete/' + ${product.id}, true)" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal para confirmar  -->
+        <div th:replace="common/modal_fragments :: confirm_modal" />
+
+        <!-- Footer -->
+        <div th:replace="common/footer :: footer"></div>
+
+    </div>
+
+    <script th:src="@{/js/common_list.js}"></script>
+    <script type="text/javascript">
+        // JQuery para eliminar el usuario - se mueve funcion a archivo common
+        moduleURL = "[[@{/brands}]]"
+
+        $(document).ready(function () {
+            $(".link-delete").on("click", function (e) {
+                e.preventDefault();
+                showDeleteConfirmModal($(this), 'product');
+            });
+        });
+    </script>
+</body>
+
+</html>

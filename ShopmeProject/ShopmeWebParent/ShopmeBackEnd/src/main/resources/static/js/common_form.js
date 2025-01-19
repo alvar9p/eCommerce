@@ -8,17 +8,9 @@ $(document).ready(function () {
     });
 
     $("#fileImage").change(function () {
-        fileSize = this.files[0].size;
-        // alert("File size: " + fileSize);
-
-        if (fileSize > 102400) {
-            this.setCustomValidity("You must choose an image less than 100KB!");
-            this.reportValidity();
-        } else {
-            this.setCustomValidity("");
-            showImageThumbnail(this);
+        if (!checkFileSize(this)) {
+            return;
         }
-
         showImageThumbnail(this);
     })
 });
@@ -32,17 +24,30 @@ function showImageThumbnail(fileInput) {
     reader.readAsDataURL(file);
 }
 
+function checkFileSize(fileInput) {
+    fileSize = fileInput.files[0].size;
+
+    // MAX_FILE_SIZE puede variar en cada form
+    if (fileSize > MAX_FILE_SIZE) {
+        fileInput.setCustomValidity("You must choose an image less than " + MAX_FILE_SIZE + " bytes!");
+        fileInput.reportValidity();
+        return false;
+    } else {
+        fileInput.setCustomValidity("");
+        return true;
+    }
+}
+
 function showModalDialog(title, message) {
     $("#modalTitle").text(title);
     $("#modalBody").text(message);
     $("#modalDialog").modal();
 }
 
-// Se llama desde user_form y category_form
-function showErrorModal(message){
+function showErrorModal(message) {
     showModalDialog("Error", message);
 }
 
-function showWarningModal(message){
+function showWarningModal(message) {
     showModalDialog("Warning", message);
 }
